@@ -1,0 +1,162 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+    ADMIN
+    WAITER
+}
+
+model User {
+    id       Int    @id @default(autoincrement())
+    password String
+
+    role      UserRole @default(WAITER)
+    relatedId Int
+
+    session Session[]
+
+    @@unique([role, relatedId])
+}
+
+model Waiter {
+    id        Int    @id @default(autoincrement())
+    firstName String
+    lastName  String
+    email     String @unique
+    phone     String
+    address   String
+
+    orders Order[]
+}
+
+model Admin {
+    id        Int    @id @default(autoincrement())
+    firstName String
+    lastName  String
+    email     String @unique
+    phone     String
+    address   String
+}
+
+model Session {
+    id        String   @id
+    expiresAt DateTime
+
+    userId Int
+    user   User @relation(references: [id], fields: [userId], onDelete: Cascade)
+}
+
+enum TableStatus {
+    Available
+    Occupied
+    Reserved
+}
+
+model Table {
+    id           Int           @id @default(autoincrement())
+    capacity     Int
+    status       TableStatus
+    reservations Reservation[]
+    orders       Order[]
+}
+
+enum ReservationStatus {
+    Confirmed
+    Canceled
+    Pending
+}
+
+model Reservation {
+    id          Int               @id @default(autoincrement())
+    scheduledAt DateTime
+    status      ReservationStatus
+    createdAt   DateTime          @default(now())
+    clientId    Int
+    tableId     Int
+    Client      Client            @relation(fields: [clientId], references: [id])
+    Table       Table             @relation(fields: [tableId], references: [id])
+}
+
+enum OrderStatus {
+    InProcess
+    Completed
+    Canceled
+}
+
+model OrderItem {
+    quantity  Int // Cantidad de productos en el pedido
+    unitPrice Float // Precio del producto en el momento del pedido
+
+    orderId   Int // Relación con el pedido
+    productId Int // Relación con el producto
+
+    Order   Order   @relation(fields: [orderId], references: [id])
+    Product Product @relation(fields: [productId], references: [id])
+
+    @@id([orderId, productId])
+}
+
+model Product {
+    id          Int     @id @default(autoincrement())
+    name        String
+    description String?
+    price       Float // Precio actual del producto
+    stock       Int
+    categoryId  Int
+    sectionId   Int
+
+    Category   Category    @relation(fields: [categoryId], references: [id])
+    Section    Section     @relation(fields: [sectionId], references: [id])
+    orderItems OrderItem[]
+}
+
+model Order {
+    id            Int      @id @default(autoincrement())
+    createdAt     DateTime @default(now())
+    status        String // Estado del pedido (e.g., InProcess, Completed, Canceled)
+    total         Float // Suma de todos los OrderItems
+    paymentMethod String // Efectivo, tarjeta, etc.
+    clientId      Int
+    waiterId      Int
+    tableId       Int
+
+    client Client @relation(fields: [clientId], references: [id])
+    waiter Waiter @relation(fields: [waiterId], references: [id])
+    table  Table  @relation(fields: [tableId], references: [id])
+
+    orderItems OrderItem[]
+}
+
+model Category {
+    id          Int     @id @default(autoincrement())
+    name        String
+    description String?
+
+    products Product[]
+}
+
+model Section {
+    id       Int       @id @default(autoincrement())
+    name     String
+    products Product[]
+}
+
+model Client {
+    id        Int    @id @default(autoincrement())
+    firstName String
+    lastName  String
+    phone     String
+    email     String @unique
+
+    reservations Reservation[]
+    orders       Order[]
+}
