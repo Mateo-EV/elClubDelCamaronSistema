@@ -13,38 +13,27 @@ datasource db {
 enum UserRole {
     ADMIN
     WAITER
+    CHEF
+    HOST
 }
 
 model User {
-    id       Int    @id @default(autoincrement())
+    id        Int     @id @default(autoincrement())
+    firstName String
+    lastName  String
+    email     String  @unique
+    dni       String  @unique @db.VarChar(20)
+    phone     String
+    address   String?
+
     password String
 
-    role      UserRole @default(WAITER)
-    relatedId Int
+    role UserRole @default(WAITER)
 
-    session Session[]
+    sessions Session[]
+    orders   Order[]
 
-    @@unique([role, relatedId])
-}
-
-model Waiter {
-    id        Int    @id @default(autoincrement())
-    firstName String
-    lastName  String
-    email     String @unique
-    phone     String
-    address   String
-
-    orders Order[]
-}
-
-model Admin {
-    id        Int    @id @default(autoincrement())
-    firstName String
-    lastName  String
-    email     String @unique
-    phone     String
-    address   String
+    createdAt DateTime @default(now())
 }
 
 model Session {
@@ -80,19 +69,14 @@ model Reservation {
     scheduledAt DateTime
     status      ReservationStatus
     createdAt   DateTime          @default(now())
-    clientId    Int
-    tableId     Int
-    Client      Client            @relation(fields: [clientId], references: [id])
-    Table       Table             @relation(fields: [tableId], references: [id])
+
+    clientId Int
+    tableId  Int
+    Client   Client @relation(fields: [clientId], references: [id])
+    Table    Table  @relation(fields: [tableId], references: [id])
 }
 
-enum OrderStatus {
-    InProcess
-    Completed
-    Canceled
-}
-
-model OrderItem {
+model OrderProduct {
     quantity  Int // Cantidad de productos en el pedido
     unitPrice Float // Precio del producto en el momento del pedido
 
@@ -114,26 +98,42 @@ model Product {
     categoryId  Int
     sectionId   Int
 
-    Category   Category    @relation(fields: [categoryId], references: [id])
-    Section    Section     @relation(fields: [sectionId], references: [id])
-    orderItems OrderItem[]
+    Category     Category       @relation(fields: [categoryId], references: [id])
+    Section      Section        @relation(fields: [sectionId], references: [id])
+    orderDetails OrderProduct[]
+}
+
+enum OrderStatus {
+    Pending
+    InProcess
+    Canceled
+    Completed
 }
 
 model Order {
-    id            Int      @id @default(autoincrement())
-    createdAt     DateTime @default(now())
-    status        String // Estado del pedido (e.g., InProcess, Completed, Canceled)
-    total         Float // Suma de todos los OrderItems
-    paymentMethod String // Efectivo, tarjeta, etc.
-    clientId      Int
-    waiterId      Int
-    tableId       Int
+    id              Int         @id @default(autoincrement())
+    createdAt       DateTime    @default(now())
+    status          OrderStatus
+    total           Float
+    paymentMethodId Int
+    clientId        Int
+    waiterId        Int
+    tableId         Int
+    notes           String?
 
-    client Client @relation(fields: [clientId], references: [id])
-    waiter Waiter @relation(fields: [waiterId], references: [id])
-    table  Table  @relation(fields: [tableId], references: [id])
+    paymentMethod PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+    client        Client        @relation(fields: [clientId], references: [id])
+    waiter        User          @relation(fields: [waiterId], references: [id])
+    table         Table         @relation(fields: [tableId], references: [id])
 
-    orderItems OrderItem[]
+    details OrderProduct[]
+}
+
+model PaymentMethod {
+    id   Int    @id @default(autoincrement())
+    name String @unique
+
+    Order Order[]
 }
 
 model Category {
@@ -159,4 +159,23 @@ model Client {
 
     reservations Reservation[]
     orders       Order[]
+    waitlists    Waitlist[]
+}
+
+enum WaitlistStatus {
+    Waiting
+    Seated
+    Cancelled
+}
+
+model Waitlist {
+    id              Int            @id @default(autoincrement())
+    partySize       Int
+    status          WaitlistStatus @default(Waiting)
+    reservationTime DateTime       @default(now())
+    seatedTime      DateTime? // Puede ser nulo hasta que el cliente sea sentado
+    notes           String? // Opcional
+
+    clientId Int
+    client   Client @relation(fields: [clientId], references: [id])
 }

@@ -1,5 +1,5 @@
-import { PrismaClient } from "@prisma/client";
-import { hash } from "@node-rs/argon2";
+import { hash } from "@/lib/argon";
+import { PrismaClient, UserRole } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -9,7 +9,7 @@ async function main() {
 
   // Creando Secciones
   const section1 = await prisma.section.create({
-    data: { name: "Platos Criollos" },
+    data: { name: "Platos" },
   });
 
   const section2 = await prisma.section.create({
@@ -191,39 +191,29 @@ async function main() {
   });
 
   // Creando Waiter y Admin, y asociándolos a User
-  const waiter = await prisma.waiter.create({
+  const waiter = await prisma.user.create({
     data: {
       firstName: "Carlos",
       lastName: "Lopez",
       email: "carlos.lopez@restaurante.com",
       phone: "987654321",
       address: "Av. Principal 123",
+      dni: "77030293",
+      password: hashedPassword,
+      role: UserRole.WAITER,
     },
   });
 
   await prisma.user.create({
     data: {
-      password: hashedPassword,
-      role: "WAITER",
-      relatedId: waiter.id, // ID de la tabla Waiter
-    },
-  });
-
-  const admin = await prisma.admin.create({
-    data: {
-      firstName: "Ana",
-      lastName: "Martinez",
-      email: "ana.martinez@restaurante.com",
+      firstName: "Mateo",
+      lastName: "Rioja",
+      email: "mateo.rioja@restaurante.com",
       phone: "998877665",
       address: "Jr. Secundaria 456",
-    },
-  });
-
-  await prisma.user.create({
-    data: {
+      dni: "77030292",
       password: hashedPassword,
-      role: "ADMIN",
-      relatedId: admin.id, // ID de la tabla Admin
+      role: UserRole.ADMIN,
     },
   });
 
@@ -270,20 +260,23 @@ async function main() {
     },
   });
 
+  await prisma.paymentMethod.createMany({
+    data: [{ name: "Tarjeta" }, { name: "Efectivo" }],
+  });
+
   // Creando un pedido con productos
   const order = await prisma.order.create({
     data: {
       status: "InProcess",
       total: 0, // Será calculado más adelante
-      paymentMethod: "Efectivo",
+      paymentMethodId: 1,
       clientId: 1, // Juan Pérez
       waiterId: waiter.id,
       tableId: table.id,
     },
   });
 
-  // Creando los elementos del pedido (OrderItems)
-  await prisma.orderItem.createMany({
+  await prisma.orderProduct.createMany({
     data: [
       {
         quantity: 2,
