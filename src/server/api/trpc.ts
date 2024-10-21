@@ -11,7 +11,8 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { db } from "@/server/db";
-import { getSession } from "../auth/session";
+import { getSession, isAdmin } from "../auth/session";
+import { UserRole } from "@prisma/client";
 
 /**
  * 1. CONTEXT
@@ -108,3 +109,11 @@ export const protectedProcedure = t.procedure
 
     return next({ ctx: { ...ctx, session } });
   });
+
+export const adminProcedure = protectedProcedure.use(async ({ ctx, next }) => {
+  if (await isAdmin()) {
+    return next();
+  }
+
+  throw new TRPCError({ code: "UNAUTHORIZED" });
+});

@@ -11,10 +11,10 @@ datasource db {
 }
 
 enum UserRole {
-    ADMIN
-    WAITER
-    CHEF
-    HOST
+    ADMIN  @map("Admin")
+    WAITER @map("Mozo")
+    CHEF   @map("Chef")
+    HOST   @map("Host")
 }
 
 model User {

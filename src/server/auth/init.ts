@@ -1,8 +1,8 @@
-import { PrismaAdapter } from "@lucia-auth/adapter-prisma";
-import { db } from "../db";
-import { Lucia } from "lucia";
-import { type User, type UserRole } from "@prisma/client";
 import { env } from "@/env";
+import { PrismaAdapter } from "@lucia-auth/adapter-prisma";
+import { type User } from "@prisma/client";
+import { Lucia } from "lucia";
+import { db } from "../db";
 
 const adapter = new PrismaAdapter(db.session, db.user);
 
@@ -15,8 +15,9 @@ export const lucia = new Lucia(adapter, {
   },
   getUserAttributes: (attributes) => {
     return {
-      firstname: attributes.firstName,
-      lastname: attributes.lastName,
+      code: "",
+      firstName: attributes.firstName,
+      lastName: attributes.lastName,
       email: attributes.email,
       phone: attributes.phone,
       address: attributes.address,

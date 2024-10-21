@@ -1,8 +1,8 @@
 "use server";
 
 import { verify } from "@/lib/argon";
+import { unformatId } from "@/lib/utils";
 import { lucia } from "@/server/auth/init";
-import { unformatId } from "@/server/auth/utils";
 import { db } from "@/server/db";
 import { loginSchema, type loginSchemaType } from "@/validators/auth";
 import { cookies } from "next/headers";

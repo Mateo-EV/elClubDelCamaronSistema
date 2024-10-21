@@ -1,6 +1,10 @@
+import "server-only";
+
 import { cookies } from "next/headers";
 import { cache } from "react";
 import { lucia } from "./init";
+import { UserRole } from "@prisma/client";
+import { formatId } from "@/lib/utils";
 
 export const getSession = cache(async () => {
   const sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;
@@ -32,8 +36,16 @@ export const getSession = cache(async () => {
 
   if (!result.user || !result.session) return null;
 
+  result.user.code = formatId(result.user.id);
+
   return {
     user: result.user,
     ...result.session,
   };
+});
+
+export const isAdmin = cache(async () => {
+  const session = (await getSession())!;
+
+  return session.user.role === UserRole.ADMIN;
 });

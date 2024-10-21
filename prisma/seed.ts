@@ -1,5 +1,6 @@
 import { hash } from "@/lib/argon";
 import { PrismaClient, UserRole } from "@prisma/client";
+import { faker } from "@faker-js/faker";
 
 const prisma = new PrismaClient();
 
@@ -209,13 +210,46 @@ async function main() {
       firstName: "Mateo",
       lastName: "Rioja",
       email: "mateo.rioja@restaurante.com",
-      phone: "998877665",
+      phone: "977895791",
       address: "Jr. Secundaria 456",
       dni: "77030292",
       password: hashedPassword,
       role: UserRole.ADMIN,
     },
   });
+
+  const fakeUsers = [] as {
+    id?: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    dni: string;
+    phone: string;
+    address?: string | null;
+    password: string;
+    role?: UserRole;
+    createdAt?: Date | string;
+  }[];
+
+  const Roles = [UserRole.CHEF, UserRole.HOST, UserRole.WAITER];
+
+  for (let index = 0; index < 20; index++) {
+    const firstName = faker.person.firstName();
+    const lastName = faker.person.lastName();
+
+    fakeUsers.push({
+      firstName,
+      lastName,
+      dni: faker.number.int({ min: 70000000, max: 79999999 }).toString(),
+      email: faker.internet.email({ firstName, lastName }),
+      password: hashedPassword,
+      phone: "987654321",
+      address: faker.location.streetAddress(),
+      role: Roles[faker.number.int({ min: 0, max: 2 })]!,
+    });
+  }
+
+  await prisma.user.createMany({ data: fakeUsers });
 
   // Creando Clientes
   await prisma.client.createMany({
