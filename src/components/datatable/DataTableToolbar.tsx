@@ -1,33 +1,55 @@
+import { Cross2Icon } from "@radix-ui/react-icons";
 import { type Table } from "@tanstack/react-table";
-import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { Cross2Icon, QuestionMarkCircledIcon } from "@radix-ui/react-icons";
+import { Input } from "../ui/input";
 import { DataTableFacetedFilter } from "./DataTableFacetedFilter";
-import { ArrowDownIcon, ArrowRightIcon, CircleIcon } from "lucide-react";
 import { DataTableViewOptions } from "./DataTableViewOptions";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
   placeholderSearchInput: string;
   children?: React.ReactNode;
+  selectFilters?: {
+    column: string;
+    options: {
+      label: string;
+      value: string;
+      icon?: React.ComponentType<{ className?: string }>;
+    }[];
+  }[];
 }
 
 export function DataTableToolbar<TData>({
   table,
   placeholderSearchInput,
   children,
+  selectFilters = [],
 }: DataTableToolbarProps<TData>) {
-  const isFiltered = table.getState().columnFilters.length > 0;
+  const globalSearch = table.getState().globalFilter as string;
+  const isFiltered =
+    globalSearch.length > 1 || table.getState().columnFilters.length > 0;
 
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
         <Input
+          value={globalSearch}
           placeholder={placeholderSearchInput}
           onChange={(event) => table.setGlobalFilter(event.target.value)}
           className="h-8 w-[150px] lg:w-[250px]"
         />
-        {table.getColumn("status") && (
+        {selectFilters.map(({ column, options }) => {
+          if (table.getColumn(column))
+            return (
+              <DataTableFacetedFilter
+                key={column}
+                column={table.getColumn(column)}
+                title={column}
+                options={options}
+              />
+            );
+        })}
+        {/* {table.getColumn("status") && (
           <DataTableFacetedFilter
             column={table.getColumn("status")}
             title="Status"
@@ -62,15 +84,17 @@ export function DataTableToolbar<TData>({
               },
             ]}
           />
-        )}
+        )} */}
         {isFiltered && (
           <Button
             variant="ghost"
-            onClick={() => table.resetColumnFilters()}
-            className="h-8 px-2 lg:px-3"
+            size="sm"
+            onClick={() => {
+              table.resetColumnFilters();
+              table.setGlobalFilter("");
+            }}
           >
-            Limpiar
-            <Cross2Icon className="ml-2 h-4 w-4" />
+            <Cross2Icon className="size-4" />
           </Button>
         )}
       </div>

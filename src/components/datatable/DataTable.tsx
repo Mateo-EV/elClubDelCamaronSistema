@@ -21,27 +21,45 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow as TableRowLib,
 } from "@/components/ui/table";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSidebar } from "../ui/sidebar";
 import { DataTableColumnHeader } from "./DataTableColumnHeader";
 import { DataTablePagination } from "./DataTablePagination";
 import { DataTableToolbar } from "./DataTableToolbar";
+import { AnimatePresence, motion, useIsPresent } from "framer-motion";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
+interface DataTableProps<
+  TData,
+  TValue,
+  ColumnDefT extends ColumnDef<TData, TValue>[],
+> {
+  columns: ColumnDefT;
   data: TData[];
   placeholderSearchInput: string;
   children?: React.ReactNode;
+  selectFilters?: {
+    column: NonNullable<ColumnDefT[number]["id"]>;
+    options: {
+      label: string;
+      value: string;
+      icon?: React.ComponentType<{ className?: string }>;
+    }[];
+  }[];
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<
+  TData,
+  TValue,
+  ColumnDefT extends ColumnDef<TData, TValue>[],
+>({
   columns,
   data,
   placeholderSearchInput,
   children,
-}: DataTableProps<TData, TValue>) {
+  selectFilters = [],
+}: DataTableProps<TData, TValue, ColumnDefT>) {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -75,6 +93,7 @@ export function DataTable<TData, TValue>({
     <DataTableContainer>
       <DataTableToolbar
         table={table}
+        selectFilters={selectFilters}
         placeholderSearchInput={placeholderSearchInput}
       >
         {children}
@@ -99,34 +118,36 @@ export function DataTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
+          <AnimatePresence>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow key="anyone">
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    No hay resultados
+                  </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No hay resultados
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
+              )}
+            </TableBody>
+          </AnimatePresence>
         </Table>
       </div>
       <DataTablePagination table={table} />
@@ -160,5 +181,29 @@ function DataTableContainer({ children }: { children: React.ReactNode }) {
     <div className="space-y-4" style={{ maxWidth }}>
       {children}
     </div>
+  );
+}
+
+const TableRowMotion = motion(TableRowLib);
+
+function TableRow(
+  props: React.ComponentPropsWithoutRef<typeof TableRowMotion>,
+) {
+  const isPresent = useIsPresent();
+
+  return (
+    <TableRowMotion
+      {...props}
+      layout
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      style={{
+        position: isPresent ? "relative" : "absolute",
+        display: isPresent ? "table-row" : "flex",
+        alignItems: isPresent ? "" : "center",
+      }}
+    />
   );
 }

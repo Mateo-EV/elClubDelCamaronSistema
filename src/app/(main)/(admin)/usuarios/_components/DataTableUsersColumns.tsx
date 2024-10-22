@@ -8,9 +8,7 @@ import { type RouterOutputs } from "@/trpc/react";
 import { type ColumnDef } from "@tanstack/react-table";
 import { IdCardIcon, PhoneIcon } from "lucide-react";
 
-export const usersTableColums: ColumnDef<
-  RouterOutputs["user"]["getAll"][number]
->[] = [
+export const usersTableColums = [
   {
     id: "Código",
     accessorFn: ({ id }) => formatId(id),
@@ -38,7 +36,20 @@ export const usersTableColums: ColumnDef<
   },
   {
     id: "Rol",
-    accessorFn: ({ role }) => ROLES_DATA[role].name,
+    accessorKey: "role",
+    cell: ({ row: { original: user } }) => {
+      const rolData = ROLES_DATA[user.role];
+
+      return (
+        <div className="flex w-[100px] items-center">
+          <rolData.icon className="mr-2 size-4 text-muted-foreground" />
+          <span>{rolData.name}</span>
+        </div>
+      );
+    },
+    filterFn: (row, id, values: string[]) => {
+      return values.includes(row.getValue(id));
+    },
   },
   {
     id: "Estado",
@@ -72,4 +83,4 @@ export const usersTableColums: ColumnDef<
       </div>
     ),
   },
-];
+] as const satisfies ColumnDef<RouterOutputs["user"]["getAll"][number]>[];
