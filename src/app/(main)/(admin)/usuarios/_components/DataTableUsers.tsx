@@ -3,15 +3,15 @@
 import { DataTable } from "@/components/datatable/DataTable";
 import { Button } from "@/components/ui/button";
 import { ROLES_DATA } from "@/data/const";
-import { type RouterOutputs } from "@/trpc/react";
 import { PlusIcon } from "lucide-react";
 import { usersTableColums } from "./DataTableUsersColumns";
+import { api } from "@/trpc/react";
+import { ModalResponsive } from "@/components/modal/ModalResponsive";
+import { CreateUserForm } from "./CreateUserForm";
 
-type DataTableUsersProps = {
-  users: RouterOutputs["user"]["getAll"];
-};
+export const DataTableUsers = () => {
+  const [users] = api.user.getAll.useSuspenseQuery();
 
-export const DataTableUsers = ({ users }: DataTableUsersProps) => {
   return (
     <DataTable
       data={users}
@@ -26,10 +26,18 @@ export const DataTableUsers = ({ users }: DataTableUsersProps) => {
         },
       ]}
     >
-      <Button size="sm">
-        <PlusIcon className="size-4" />
-        Crear Usuario
-      </Button>
+      <ModalResponsive
+        title="Nuevo Usuario"
+        description="Agrega un nuevo usuario para que pueda ingresar al sistema"
+        trigger={
+          <Button size="sm">
+            <PlusIcon className="size-4" />
+            Crear Usuario
+          </Button>
+        }
+      >
+        <CreateUserForm />
+      </ModalResponsive>
     </DataTable>
   );
 };

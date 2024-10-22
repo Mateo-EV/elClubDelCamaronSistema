@@ -33,7 +33,7 @@ type FormInputControllerProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 > = Omit<ControllerProps<TFieldValues, TName>, "render"> & {
-  input: InputProps;
+  input?: InputProps;
   label: string;
 };
 
@@ -41,7 +41,7 @@ export const FormInputController = <
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >({
-  input: { type = "text", ...input },
+  input = {},
   label,
   ...props
 }: FormInputControllerProps<TFieldValues, TName>) => {
@@ -52,7 +52,7 @@ export const FormInputController = <
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            <Input {...input} type={type} {...field} />
+            <Input {...input} type={input?.type ?? "text"} {...field} />
           </FormControl>
           <FormMessage />
         </FormItem>
@@ -61,21 +61,24 @@ export const FormInputController = <
   );
 };
 
-type FormSelectControllerProps = Omit<
-  React.ComponentPropsWithoutRef<typeof FormField>,
-  "render"
-> & {
+type FormSelectControllerProps<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+> = Omit<ControllerProps<TFieldValues, TName>, "render"> & {
   placeholder: string;
   label: string;
   options: (item: typeof SelectItem) => JSX.Element;
 };
 
-export const FormSelectController = ({
+export const FormSelectController = <
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+>({
   placeholder,
   label,
   options,
   ...props
-}: FormSelectControllerProps) => {
+}: FormSelectControllerProps<TFieldValues, TName>) => {
   return (
     <FormField
       {...props}
@@ -98,10 +101,10 @@ export const FormSelectController = ({
   );
 };
 
-type FormComboboxControllerProps = Omit<
-  React.ComponentPropsWithoutRef<typeof FormField>,
-  "render"
-> & {
+type FormComboboxControllerProps<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+> = Omit<ControllerProps<TFieldValues, TName>, "render"> & {
   placeholder: string;
   label: string;
   searchPlaceholder: string;
@@ -109,14 +112,17 @@ type FormComboboxControllerProps = Omit<
   options: (item: typeof ComboboxItem) => JSX.Element;
 };
 
-export const FormComboboxController = ({
+export const FormComboboxController = <
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+>({
   label,
   placeholder,
   searchPlaceholder,
   emptyMessage,
   options,
   ...props
-}: FormComboboxControllerProps) => {
+}: FormComboboxControllerProps<TFieldValues, TName>) => {
   return (
     <FormField
       {...props}

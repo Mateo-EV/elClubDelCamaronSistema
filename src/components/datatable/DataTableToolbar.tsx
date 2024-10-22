@@ -49,42 +49,6 @@ export function DataTableToolbar<TData>({
               />
             );
         })}
-        {/* {table.getColumn("status") && (
-          <DataTableFacetedFilter
-            column={table.getColumn("status")}
-            title="Status"
-            options={[
-              {
-                value: "backlog",
-                label: "Backlog",
-                icon: QuestionMarkCircledIcon,
-              },
-              {
-                value: "todo",
-                label: "Todo",
-                icon: CircleIcon,
-              },
-            ]}
-          />
-        )}
-        {table.getColumn("priority") && (
-          <DataTableFacetedFilter
-            column={table.getColumn("priority")}
-            title="Priority"
-            options={[
-              {
-                label: "Low",
-                value: "low",
-                icon: ArrowDownIcon,
-              },
-              {
-                label: "Medium",
-                value: "medium",
-                icon: ArrowRightIcon,
-              },
-            ]}
-          />
-        )} */}
         {isFiltered && (
           <Button
             variant="ghost"

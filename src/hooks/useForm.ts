@@ -15,11 +15,20 @@ type useFormProps<
 > = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   schema: z.ZodType<TFieldValues, any, unknown>;
-  onSubmit: (
-    values: TFieldValues,
-    form: UseFormReturn<TFieldValues, TContext, undefined>,
-  ) => Promise<void> | void;
-} & Omit<UseFormProps<TFieldValues, TContext>, "resolver">;
+} & Omit<UseFormProps<TFieldValues, TContext>, "resolver"> &
+  (
+    | {
+        onSubmit: (
+          values: TFieldValues,
+          form: UseFormReturn<TFieldValues, TContext, undefined>,
+        ) => Promise<void> | void;
+        onFastSubmit?: undefined;
+      }
+    | {
+        onFastSubmit: (values: TFieldValues) => void;
+        onSubmit?: undefined;
+      }
+  );
 
 const useForm = <
   TFieldValues extends FieldValues = FieldValues,
@@ -27,6 +36,7 @@ const useForm = <
 >({
   schema,
   onSubmit: onSubmitHook,
+  onFastSubmit: onFastSubmitHook,
   ...props
 }: useFormProps<TFieldValues, TContext>) => {
   const useFormData = useFormLib<TFieldValues, TContext, undefined>({
@@ -34,9 +44,13 @@ const useForm = <
     ...props,
   });
 
-  const onSubmit = useFormData.handleSubmit(
-    async (values) => await onSubmitHook(values, useFormData),
-  );
+  const onSubmit = useFormData.handleSubmit(async (values) => {
+    if (onFastSubmitHook) {
+      onFastSubmitHook(values);
+    } else {
+      await onSubmitHook(values, useFormData);
+    }
+  });
 
   return { onSubmit, ...useFormData };
 };
