@@ -1,6 +1,7 @@
 import {
   FormInputController,
   FormSelectController,
+  FormTextAreaController,
 } from "@/components/FormControllers";
 import { ROLES_DATA } from "@/data/const";
 import { type userCreateSchemaType } from "@/validators/user";
@@ -31,6 +32,32 @@ export const UserFormFields = ({ control }: UserFormFieldProps) => {
           </>
         )}
       />
+      <FormInputController control={control} name="dni" label="Dni" />
+      <FormInputController
+        control={control}
+        input={{ type: "tel" }}
+        name="phone"
+        label="Teléfono"
+      />
+      <FormInputController
+        control={control}
+        input={{ type: "password" }}
+        name="password"
+        label="Contraseña"
+      />
+      <FormInputController
+        control={control}
+        input={{ type: "password" }}
+        name="confirmedPassword"
+        label="Confirmar contraseña"
+      />
+      <div className="col-span-2">
+        <FormTextAreaController
+          control={control}
+          name="address"
+          label="Dirección"
+        />
+      </div>
     </>
   );
 };

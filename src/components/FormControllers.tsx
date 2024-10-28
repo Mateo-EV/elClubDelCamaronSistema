@@ -1,9 +1,14 @@
+import { cn } from "@/lib/utils";
 import {
   type ControllerProps,
   type FieldPath,
   type FieldValues,
   type FormProviderProps,
 } from "react-hook-form";
+import {
+  AutosizeTextarea,
+  type AutosizeTextAreaProps,
+} from "./ui/autosize-textarea";
 import {
   Combobox,
   ComboboxContent,
@@ -16,8 +21,8 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
   Form as FormLib,
+  FormMessage,
 } from "./ui/form";
 import { Input, type InputProps } from "./ui/input";
 import {
@@ -27,7 +32,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { cn } from "@/lib/utils";
 
 type FormInputControllerProps<
   TFieldValues extends FieldValues = FieldValues,
@@ -52,7 +56,43 @@ export const FormInputController = <
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            <Input {...input} type={input?.type ?? "text"} {...field} />
+            <Input {...input} type={input.type ?? "text"} {...field} />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
+
+type FormTextAreaControllerProps<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+> = Omit<ControllerProps<TFieldValues, TName>, "render"> & {
+  textarea?: AutosizeTextAreaProps;
+  label: string;
+};
+
+export const FormTextAreaController = <
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+>({
+  textarea = {},
+  label,
+  ...props
+}: FormTextAreaControllerProps<TFieldValues, TName>) => {
+  return (
+    <FormField
+      {...props}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>{label}</FormLabel>
+          <FormControl>
+            <AutosizeTextarea
+              {...textarea}
+              maxHeight={textarea.maxHeight ?? 80}
+              {...field}
+            />
           </FormControl>
           <FormMessage />
         </FormItem>

@@ -1,5 +1,6 @@
 "use client";
 
+import { ModalResponsive } from "@/components/modal/ModalResponsive";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ROLES_DATA } from "@/data/const";
@@ -7,6 +8,7 @@ import { formatId } from "@/lib/utils";
 import { type RouterOutputs } from "@/trpc/react";
 import { type ColumnDef } from "@tanstack/react-table";
 import { IdCardIcon, PhoneIcon } from "lucide-react";
+import { EditUserForm } from "./EditUserForm";
 
 export const usersTableColums = [
   {
@@ -76,9 +78,15 @@ export const usersTableColums = [
   {
     id: "Acciones",
     header: "",
-    cell: () => (
+    cell: ({ row }) => (
       <div className="flex gap-2">
-        <Button variant="secondary">Editar</Button>
+        <ModalResponsive
+          title="Editar Usuario"
+          description="Actualiza los datos del usuario"
+          trigger={<Button variant="secondary">Editar</Button>}
+        >
+          <EditUserForm user={row.original} />
+        </ModalResponsive>
         <Button variant="destructive">Eliminar</Button>
       </div>
     ),
