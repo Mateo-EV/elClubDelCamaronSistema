@@ -2,6 +2,7 @@ import { hash } from "@/lib/argon";
 import { userCreateSchema, userEditSchemaServer } from "@/validators/user";
 import { TRPCError } from "@trpc/server";
 import { adminProcedure, createTRPCRouter } from "../trpc";
+import { z } from "zod";
 
 export const userRouter = createTRPCRouter({
   getAll: adminProcedure.query(async ({ ctx }) =>
@@ -100,4 +101,9 @@ export const userRouter = createTRPCRouter({
 
       return userEdited;
     }),
+  delete: adminProcedure
+    .input(z.number())
+    .mutation(({ ctx, input: userId }) =>
+      ctx.db.user.delete({ where: { id: userId } }),
+    ),
 });

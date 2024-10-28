@@ -27,6 +27,9 @@ import {
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/providers/AuthProvider";
 import { AuthAvatar } from "./AuthAvatar";
+import React, { useTransition } from "react";
+import { logout } from "@/actions/auth";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 export const AppSidebarFooter = () => {
   const { isMobile } = useSidebar();
@@ -93,14 +96,30 @@ export const AppSidebarFooter = () => {
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <LogOut />
-                Log out
-              </DropdownMenuItem>
+              <LogoutButton />
             </DropdownMenuContent>
           </DropdownMenu>
         </SidebarMenuItem>
       </SidebarMenu>
     </SidebarFooter>
+  );
+};
+
+const LogoutButton = () => {
+  const [isPending, startTransition] = useTransition();
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+
+    startTransition(async () => {
+      await logout();
+    });
+  };
+
+  return (
+    <DropdownMenuItem onClick={handleClick}>
+      {isPending ? <LoadingSpinner /> : <LogOut />}
+      Log out
+    </DropdownMenuItem>
   );
 };

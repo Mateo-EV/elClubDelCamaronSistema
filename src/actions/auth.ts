@@ -7,6 +7,8 @@ import { db } from "@/server/db";
 import { loginSchema, type loginSchemaType } from "@/validators/auth";
 import { cookies } from "next/headers";
 import { ActionResponse } from "./general";
+import { getSession } from "@/server/auth/session";
+import { redirect } from "next/navigation";
 
 export async function login(data: loginSchemaType) {
   try {
@@ -42,4 +44,23 @@ export async function login(data: loginSchemaType) {
   }
 
   return ActionResponse.redirect("/dashboard");
+}
+
+export async function logout() {
+  const session = await getSession();
+  if (!session) {
+    return {
+      error: "Unauthorized",
+    };
+  }
+
+  await lucia.invalidateSession(session.id);
+
+  const sessionCookie = lucia.createBlankSessionCookie();
+  cookies().set(
+    sessionCookie.name,
+    sessionCookie.value,
+    sessionCookie.attributes,
+  );
+  return redirect("/");
 }

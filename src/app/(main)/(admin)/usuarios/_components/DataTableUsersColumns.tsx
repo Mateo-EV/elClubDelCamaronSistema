@@ -9,6 +9,7 @@ import { type RouterOutputs } from "@/trpc/react";
 import { type ColumnDef } from "@tanstack/react-table";
 import { IdCardIcon, PhoneIcon } from "lucide-react";
 import { EditUserForm } from "./EditUserForm";
+import { DeleteUserConfirm } from "./DeleteUserConfirm";
 
 export const usersTableColums = [
   {
@@ -87,7 +88,13 @@ export const usersTableColums = [
         >
           <EditUserForm user={row.original} />
         </ModalResponsive>
-        <Button variant="destructive">Eliminar</Button>
+        <ModalResponsive
+          title="Eliminar Usuario"
+          description="¿Estás seguro que deseas eliminar al usuario? Esta acción es irreversible"
+          trigger={<Button variant="destructive">Eliminar</Button>}
+        >
+          <DeleteUserConfirm userId={row.original.id} />
+        </ModalResponsive>
       </div>
     ),
   },
