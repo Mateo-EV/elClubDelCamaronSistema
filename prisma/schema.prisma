@@ -41,7 +41,7 @@ model Session {
     expiresAt DateTime
 
     userId Int
-    user   User @relation(references: [id], fields: [userId], onDelete: Cascade)
+    user   User @relation(references: [id], fields: [userId], onDelete: Cascade, onUpdate: Cascade)
 }
 
 enum TableStatus {
@@ -71,9 +71,9 @@ model Reservation {
     createdAt   DateTime          @default(now())
 
     clientId Int
-    tableId  Int
-    Client   Client @relation(fields: [clientId], references: [id])
-    Table    Table  @relation(fields: [tableId], references: [id])
+    tableId  Int?
+    client   Client @relation(fields: [clientId], references: [id], onUpdate: Cascade)
+    table    Table? @relation(fields: [tableId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 }
 
 model OrderProduct {
@@ -83,8 +83,8 @@ model OrderProduct {
     orderId   Int // Relación con el pedido
     productId Int // Relación con el producto
 
-    Order   Order   @relation(fields: [orderId], references: [id])
-    Product Product @relation(fields: [productId], references: [id])
+    order   Order   @relation(fields: [orderId], references: [id], onUpdate: Cascade)
+    product Product @relation(fields: [productId], references: [id], onUpdate: Cascade)
 
     @@id([orderId, productId])
 }
@@ -93,13 +93,13 @@ model Product {
     id          Int     @id @default(autoincrement())
     name        String
     description String?
-    price       Float // Precio actual del producto
-    stock       Int
+    price       Float
+    stock       Int     @db.UnsignedInt
     categoryId  Int
     sectionId   Int
 
-    Category     Category       @relation(fields: [categoryId], references: [id])
-    Section      Section        @relation(fields: [sectionId], references: [id])
+    category     Category       @relation(fields: [categoryId], references: [id], onUpdate: Cascade)
+    section      Section        @relation(fields: [sectionId], references: [id], onUpdate: Cascade)
     orderDetails OrderProduct[]
 }
 
@@ -118,13 +118,13 @@ model Order {
     paymentMethodId Int
     clientId        Int
     waiterId        Int
-    tableId         Int
+    tableId         Int?
     notes           String?
 
     paymentMethod PaymentMethod @relation(fields: [paymentMethodId], references: [id])
-    client        Client        @relation(fields: [clientId], references: [id])
-    waiter        User          @relation(fields: [waiterId], references: [id])
-    table         Table         @relation(fields: [tableId], references: [id])
+    client        Client        @relation(fields: [clientId], references: [id], onUpdate: Cascade)
+    waiter        User          @relation(fields: [waiterId], references: [id], onUpdate: Cascade)
+    table         Table?        @relation(fields: [tableId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
     details OrderProduct[]
 }
@@ -177,5 +177,5 @@ model Waitlist {
     notes           String? // Opcional
 
     clientId Int
-    client   Client @relation(fields: [clientId], references: [id])
+    client   Client @relation(fields: [clientId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }

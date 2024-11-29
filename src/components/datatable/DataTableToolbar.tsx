@@ -11,7 +11,7 @@ interface DataTableToolbarProps<TData> {
   children?: React.ReactNode;
   selectFilters?: {
     column: string;
-    options: {
+    options?: {
       label: string;
       value: string;
       icon?: React.ComponentType<{ className?: string }>;
@@ -43,7 +43,7 @@ export function DataTableToolbar<TData>({
             return (
               <DataTableFacetedFilter
                 key={column}
-                column={table.getColumn(column)}
+                column={table.getColumn(column)!}
                 title={column}
                 options={options}
               />

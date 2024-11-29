@@ -49,3 +49,9 @@ export const isAdmin = cache(async () => {
 
   return session.user.role === UserRole.ADMIN;
 });
+
+export const isHost = cache(async () => {
+  const session = (await getSession())!;
+
+  return session.user.role === UserRole.HOST;
+});

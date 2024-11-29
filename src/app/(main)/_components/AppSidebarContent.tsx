@@ -8,13 +8,26 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { LayoutDashboardIcon, Users2Icon } from "lucide-react";
+import {
+  CookingPotIcon,
+  LayoutDashboardIcon,
+  LayoutTemplateIcon,
+  NotebookPenIcon,
+  SquareMenuIcon,
+  TargetIcon,
+  Users2Icon,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const items = [
   { name: "Dashboard", url: "/dashboard", icon: LayoutDashboardIcon },
+  { name: "Pedidos", url: "/pedidos", icon: NotebookPenIcon },
   { name: "Usuarios", url: "/usuarios", icon: Users2Icon },
+  { name: "Clientes", url: "/clientes", icon: TargetIcon },
+  { name: "Productos", url: "/productos", icon: CookingPotIcon },
+  { name: "Categorías", url: "/categorias", icon: SquareMenuIcon },
+  { name: "Secciones", url: "/secciones", icon: LayoutTemplateIcon },
 ];
 
 export const AppSidebarContent = () => {
@@ -23,7 +36,7 @@ export const AppSidebarContent = () => {
   return (
     <SidebarContent>
       <SidebarGroup>
-        <SidebarGroupLabel>Gestion</SidebarGroupLabel>
+        <SidebarGroupLabel>Gestión</SidebarGroupLabel>
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.name}>

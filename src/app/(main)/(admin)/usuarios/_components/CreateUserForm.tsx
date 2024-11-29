@@ -49,9 +49,9 @@ export const CreateUserForm = () => {
   });
 
   return (
-    <Form {...form} className="grid-cols-[1fr] sm:grid-cols-[1fr_1fr]">
+    <Form {...form}>
       <UserFormFields control={form.control} />
-      <div className="col-span-2 mt-2 flex justify-between">
+      <div className="col-span-full mt-2 flex justify-between">
         <Button
           type="button"
           variant="secondary"

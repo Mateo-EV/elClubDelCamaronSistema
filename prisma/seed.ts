@@ -191,6 +191,19 @@ async function main() {
     ],
   });
 
+  await prisma.user.create({
+    data: {
+      firstName: "Mateo",
+      lastName: "Rioja",
+      email: "mateo.rioja@restaurante.com",
+      phone: "977895791",
+      address: "Jr. Secundaria 456",
+      dni: "77030292",
+      password: hashedPassword,
+      role: UserRole.ADMIN,
+    },
+  });
+
   // Creando Waiter y Admin, y asociándolos a User
   const waiter = await prisma.user.create({
     data: {
@@ -202,19 +215,6 @@ async function main() {
       dni: "77030293",
       password: hashedPassword,
       role: UserRole.WAITER,
-    },
-  });
-
-  await prisma.user.create({
-    data: {
-      firstName: "Mateo",
-      lastName: "Rioja",
-      email: "mateo.rioja@restaurante.com",
-      phone: "977895791",
-      address: "Jr. Secundaria 456",
-      dni: "77030292",
-      password: hashedPassword,
-      role: UserRole.ADMIN,
     },
   });
 

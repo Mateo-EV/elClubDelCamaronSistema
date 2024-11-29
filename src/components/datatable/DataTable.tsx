@@ -41,7 +41,7 @@ interface DataTableProps<
   children?: React.ReactNode;
   selectFilters?: {
     column: NonNullable<ColumnDefT[number]["id"]>;
-    options: {
+    options?: {
       label: string;
       value: string;
       icon?: React.ComponentType<{ className?: string }>;
@@ -157,19 +157,6 @@ export function DataTable<
 
 function DataTableContainer({ children }: { children: React.ReactNode }) {
   const { isMobile, open } = useSidebar();
-  // const [vw, setVw] = useState<number>();
-
-  // useEffect(() => {
-  //   const resizeObserver = new ResizeObserver(() => {
-  //     setVw(document.documentElement.clientWidth);
-  //   });
-
-  //   resizeObserver.observe(document.documentElement);
-
-  //   return () => {
-  //     resizeObserver.disconnect();
-  //   };
-  // }, []);
 
   const maxWidth = isMobile
     ? "calc(100vw - 2rem)"

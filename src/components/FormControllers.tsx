@@ -107,7 +107,7 @@ type FormSelectControllerProps<
 > = Omit<ControllerProps<TFieldValues, TName>, "render"> & {
   placeholder: string;
   label: string;
-  options: (item: typeof SelectItem) => JSX.Element;
+  options: { label: string; value: string }[];
 };
 
 export const FormSelectController = <
@@ -126,13 +126,22 @@ export const FormSelectController = <
         <FormItem>
           <FormLabel>{label}</FormLabel>
           {/*eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */}
-          <Select onValueChange={field.onChange} defaultValue={field.value}>
+          <Select
+            onValueChange={field.onChange}
+            defaultValue={String(field.value)}
+          >
             <FormControl>
               <SelectTrigger>
                 <SelectValue placeholder={placeholder} />
               </SelectTrigger>
             </FormControl>
-            <SelectContent>{options(SelectItem)}</SelectContent>
+            <SelectContent>
+              {options.map(({ label, value }) => (
+                <SelectItem key={value} value={value}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
           </Select>
           <FormMessage />
         </FormItem>
@@ -205,7 +214,10 @@ export const Form = <
 }) => {
   return (
     <FormLib {...props}>
-      <form onSubmit={onSubmit} className={cn("grid gap-4", className)}>
+      <form
+        onSubmit={onSubmit}
+        className={cn("grid grid-cols-1 gap-4 sm:grid-cols-2", className)}
+      >
         {children}
       </form>
     </FormLib>

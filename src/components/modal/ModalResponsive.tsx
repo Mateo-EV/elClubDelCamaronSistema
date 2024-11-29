@@ -74,7 +74,9 @@ export const ModalResponsive = ({
               <DrawerDescription>{description}</DrawerDescription>
             )}
           </DrawerHeader>
-          <div className="p-4 pt-0">{children}</div>
+          <div className="max-h-[calc(100vh-20rem)] overflow-y-auto p-4 pt-0">
+            {children}
+          </div>
         </DrawerContent>
       </Drawer>
     </ModalResponsiveContext.Provider>

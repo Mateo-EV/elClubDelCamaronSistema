@@ -1,4 +1,5 @@
 import { hash as hashLib, verify as verfyLib } from "@node-rs/argon2";
+import { User } from "@prisma/client";
 
 const HASHING_CONFIG = {
   memoryCost: 19456,

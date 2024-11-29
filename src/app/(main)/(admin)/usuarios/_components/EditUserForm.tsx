@@ -57,7 +57,7 @@ export const EditUserForm = ({ user }: EditUserFormProps) => {
   });
 
   return (
-    <Form {...form} className="grid-cols-1 sm:grid-cols-2">
+    <Form {...form}>
       <UserFormFields control={form.control} />
       <div className="col-span-full mt-2 flex justify-between">
         <Button

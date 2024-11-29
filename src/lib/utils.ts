@@ -28,3 +28,12 @@ export function unformatId(code: string) {
 
   return null;
 }
+
+const CURRENCY_FORMAT = Intl.NumberFormat("es-PE", {
+  style: "currency",
+  currency: "PEN",
+});
+
+export function formatPrice(price: number | bigint) {
+  return CURRENCY_FORMAT.format(price);
+}

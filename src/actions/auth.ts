@@ -17,7 +17,6 @@ export async function login(data: loginSchemaType) {
     if (!success) return ActionResponse.error("Invalid arguments");
 
     const userId = unformatId(data.code);
-    console.log(data.code, userId);
 
     if (!userId) return ActionResponse.error("Incorrect username or password");
 

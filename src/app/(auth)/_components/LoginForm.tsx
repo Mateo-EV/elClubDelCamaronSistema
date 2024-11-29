@@ -23,7 +23,7 @@ export const LoginForm = () => {
   });
 
   return (
-    <Form {...form}>
+    <Form {...form} className="sm:grid-cols-1">
       <FormInputController
         control={form.control}
         label="Código"

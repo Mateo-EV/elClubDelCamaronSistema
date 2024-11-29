@@ -18,9 +18,9 @@ import {
 } from "../ui/command";
 
 interface DataTableFacetedFilterProps<TData, TValue> {
-  column?: Column<TData, TValue>;
+  column: Column<TData, TValue>;
   title?: string;
-  options: {
+  options?: {
     label: string;
     value: string;
     icon?: React.ComponentType<{ className?: string }>;
@@ -30,10 +30,18 @@ interface DataTableFacetedFilterProps<TData, TValue> {
 export function DataTableFacetedFilter<TData, TValue>({
   column,
   title,
-  options,
+  options: optionsSettledBefore,
 }: DataTableFacetedFilterProps<TData, TValue>) {
-  const facets = column?.getFacetedUniqueValues();
-  const selectedValues = new Set(column?.getFilterValue() as string[]);
+  const facets = column.getFacetedUniqueValues() as Map<string, number>;
+  const selectedValues = new Set(column.getFilterValue() as string[]);
+
+  const options =
+    optionsSettledBefore ??
+    Array.from(facets.keys()).map((value) => ({
+      label: value,
+      value,
+      icon: undefined,
+    }));
 
   return (
     <Popover>
@@ -99,7 +107,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                         selectedValues.add(option.value);
                       }
                       const filterValues = Array.from(selectedValues);
-                      column?.setFilterValue(
+                      column.setFilterValue(
                         filterValues.length ? filterValues : undefined,
                       );
                     }}
@@ -118,7 +126,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                       <option.icon className="mr-2 size-4 text-muted-foreground" />
                     )}
                     <span>{option.label}</span>
-                    {facets?.get(option.value) && (
+                    {facets.get(option.value) && (
                       <span className="ml-auto flex size-4 items-center justify-center font-mono text-xs">
                         {facets.get(option.value)}
                       </span>
@@ -132,7 +140,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                 <CommandSeparator />
                 <CommandGroup>
                   <CommandItem
-                    onSelect={() => column?.setFilterValue(undefined)}
+                    onSelect={() => column.setFilterValue(undefined)}
                     className="justify-center text-center"
                   >
                     Limpiar filtros

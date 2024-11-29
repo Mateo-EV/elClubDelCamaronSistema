@@ -22,15 +22,10 @@ export const UserFormFields = ({ control }: UserFormFieldProps) => {
         name="role"
         label="Rol"
         placeholder="Selecciona un rol"
-        options={(Item) => (
-          <>
-            {Object.entries(ROLES_DATA).map(([value, { name }]) => (
-              <Item key={value} value={value}>
-                {name}
-              </Item>
-            ))}
-          </>
-        )}
+        options={Object.entries(ROLES_DATA).map(([value, { name }]) => ({
+          label: name,
+          value,
+        }))}
       />
       <FormInputController control={control} name="dni" label="Dni" />
       <FormInputController
@@ -51,7 +46,7 @@ export const UserFormFields = ({ control }: UserFormFieldProps) => {
         name="confirmedPassword"
         label="Confirmar contraseña"
       />
-      <div className="col-span-2">
+      <div className="col-span-full">
         <FormTextAreaController
           control={control}
           name="address"
