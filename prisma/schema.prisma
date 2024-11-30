@@ -104,10 +104,10 @@ model Product {
 }
 
 enum OrderStatus {
-    Pending
-    InProcess
-    Canceled
-    Completed
+    Pending   @map("Pendiente")
+    InProcess @map("En Proceso")
+    Canceled  @map("Cancelado")
+    Completed @map("Completado")
 }
 
 model Order {
@@ -115,16 +115,16 @@ model Order {
     createdAt       DateTime    @default(now())
     status          OrderStatus
     total           Float
-    paymentMethodId Int
+    paymentMethodId Int?
     clientId        Int
     waiterId        Int
     tableId         Int?
     notes           String?
 
-    paymentMethod PaymentMethod @relation(fields: [paymentMethodId], references: [id])
-    client        Client        @relation(fields: [clientId], references: [id], onUpdate: Cascade)
-    waiter        User          @relation(fields: [waiterId], references: [id], onUpdate: Cascade)
-    table         Table?        @relation(fields: [tableId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+    paymentMethod PaymentMethod? @relation(fields: [paymentMethodId], references: [id])
+    client        Client         @relation(fields: [clientId], references: [id], onUpdate: Cascade)
+    waiter        User           @relation(fields: [waiterId], references: [id], onUpdate: Cascade)
+    table         Table?         @relation(fields: [tableId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
     details OrderProduct[]
 }
@@ -133,7 +133,7 @@ model PaymentMethod {
     id   Int    @id @default(autoincrement())
     name String @unique
 
-    Order Order[]
+    orders Order[]
 }
 
 model Category {

@@ -7,6 +7,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import {
   CookingPotIcon,
@@ -32,6 +33,11 @@ const items = [
 
 export const AppSidebarContent = () => {
   const pathname = usePathname();
+  const { setOpenMobile } = useSidebar();
+
+  function closeSidebar() {
+    setOpenMobile(false);
+  }
 
   return (
     <SidebarContent>
@@ -41,7 +47,7 @@ export const AppSidebarContent = () => {
           {items.map((item) => (
             <SidebarMenuItem key={item.name}>
               <SidebarMenuButton asChild isActive={pathname === item.url}>
-                <Link href={item.url}>
+                <Link href={item.url} onClick={closeSidebar}>
                   <item.icon />
                   <span>{item.name}</span>
                 </Link>

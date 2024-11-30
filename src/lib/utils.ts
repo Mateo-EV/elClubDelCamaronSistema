@@ -5,14 +5,14 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatId(id: number) {
+export function formatId(id: number, char = "U") {
   let numberStr = Math.floor(id).toString();
 
   while (numberStr.length < 6) {
     numberStr = "0" + numberStr;
   }
 
-  return "U" + numberStr;
+  return char + numberStr;
 }
 
 export function unformatId(code: string) {
@@ -36,4 +36,17 @@ const CURRENCY_FORMAT = Intl.NumberFormat("es-PE", {
 
 export function formatPrice(price: number | bigint) {
   return CURRENCY_FORMAT.format(price);
+}
+
+const DATE_FORMAT = new Intl.DateTimeFormat("es-PE", {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: true,
+});
+
+export function formatDate(date: Date) {
+  return DATE_FORMAT.format(date);
 }
