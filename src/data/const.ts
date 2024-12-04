@@ -1,4 +1,4 @@
-import { UserRole } from "@prisma/client";
+import { OrderStatus, UserRole } from "@prisma/client";
 import {
   ChefHatIcon,
   HandPlatterIcon,
@@ -23,4 +23,10 @@ export const ROLES_DATA = {
     name: "Mozo",
     icon: HandPlatterIcon,
   },
+};
+export const ORDER_STATUS = {
+  [OrderStatus.Pending]: "Pendiente",
+  [OrderStatus.InProcess]: "En Proceso",
+  [OrderStatus.Canceled]: "Cancelado",
+  [OrderStatus.Completed]: "Completado",
 };

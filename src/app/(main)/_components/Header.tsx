@@ -3,6 +3,7 @@
 import {
   Breadcrumb,
   BreadcrumbItem,
+  BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
@@ -13,7 +14,9 @@ import { usePathname } from "next/navigation";
 import { AuthAvatar } from "./AuthAvatar";
 
 export const Header = () => {
-  const pathName = usePathname();
+  const pathname = usePathname();
+
+  const pathnameDivided = pathname.split("/").filter(Boolean);
 
   return (
     <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
@@ -27,11 +30,23 @@ export const Header = () => {
                 Gestión
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
-              <BreadcrumbItem>
-                <BreadcrumbPage>
-                  {pathName[1]!.toUpperCase() + pathName.slice(2)}
-                </BreadcrumbPage>
-              </BreadcrumbItem>
+              {pathnameDivided.map((path, index) => (
+                <>
+                  <BreadcrumbItem
+                    className="hidden capitalize md:block"
+                    key={path}
+                  >
+                    {index === pathnameDivided.length - 1 ? (
+                      <BreadcrumbPage>{path}</BreadcrumbPage>
+                    ) : (
+                      <BreadcrumbLink href={`/${path}`}>{path}</BreadcrumbLink>
+                    )}
+                  </BreadcrumbItem>
+                  {index !== pathnameDivided.length - 1 && (
+                    <BreadcrumbSeparator className="hidden md:block" />
+                  )}
+                </>
+              ))}
             </BreadcrumbList>
           </Breadcrumb>
         </div>

@@ -158,7 +158,9 @@ type FormComboboxControllerProps<
   label: string;
   searchPlaceholder: string;
   emptyMessage: string;
-  options: (item: typeof ComboboxItem) => JSX.Element;
+  options: (
+    item: typeof ComboboxItem,
+  ) => JSX.Element | JSX.Element[] | undefined;
 };
 
 export const FormComboboxController = <

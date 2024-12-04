@@ -1,7 +1,7 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { ORDER_STATUS } from "@/const";
+import { ORDER_STATUS } from "@/data/const";
 import { formatDate, formatId, formatPrice } from "@/lib/utils";
 import { type RouterOutputs } from "@/trpc/react";
 import { type ColumnDef } from "@tanstack/react-table";
@@ -35,7 +35,7 @@ export const ordersTableColums = [
   },
   {
     id: "Estado",
-    accessorKey: "status",
+    accessorFn: ({ status }) => ORDER_STATUS[status],
     cell: ({
       row: {
         original: { status },

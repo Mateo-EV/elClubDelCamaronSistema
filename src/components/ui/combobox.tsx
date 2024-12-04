@@ -67,7 +67,7 @@ const ComboboxTrigger = ({
     <Button
       variant="outline"
       role="combobox"
-      className={cn("w-[200px] justify-between", className)}
+      className={cn("flex w-full justify-between", className)}
       {...props}
     />
   </PopoverTrigger>
@@ -78,7 +78,11 @@ const ComboboxValue = ({ placeholder }: { placeholder?: string }) => {
 
   return (
     <>
-      {chosen ? chosen.label : placeholder}{" "}
+      {chosen ? (
+        chosen.label
+      ) : (
+        <span className="text-muted-foreground">{placeholder}</span>
+      )}{" "}
       <CaretSortIcon className="ml-2 size-4 shrink-0 opacity-50" />
     </>
   );
@@ -95,7 +99,7 @@ const ComboboxContent = ({
   emptyMessage: string;
 }) => {
   return (
-    <PopoverContent className={cn("w-[200px] p-0", className)} {...props}>
+    <PopoverContent className={cn("p-0", className)} {...props}>
       <Command>
         <CommandInput className="h-9" placeholder={searchPlaceholder} />
         <CommandList>

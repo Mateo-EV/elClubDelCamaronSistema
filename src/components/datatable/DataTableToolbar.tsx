@@ -27,7 +27,9 @@ export function DataTableToolbar<TData>({
 }: DataTableToolbarProps<TData>) {
   const globalSearch = table.getState().globalFilter as string;
   const isFiltered =
-    globalSearch.length > 1 || table.getState().columnFilters.length > 0;
+    globalSearch.length > 1 ||
+    table.getState().columnFilters.length > 0 ||
+    table.getState().sorting.length > 0;
 
   return (
     <div className="flex items-center justify-between">
@@ -56,6 +58,7 @@ export function DataTableToolbar<TData>({
             onClick={() => {
               table.resetColumnFilters();
               table.setGlobalFilter("");
+              table.resetSorting();
             }}
           >
             <Cross2Icon className="size-4" />

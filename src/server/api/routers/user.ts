@@ -3,6 +3,7 @@ import { userCreateSchema, userEditSchemaServer } from "@/validators/user";
 import { TRPCError } from "@trpc/server";
 import { adminProcedure, createTRPCRouter } from "../trpc";
 import { z } from "zod";
+import { UserRole } from "@prisma/client";
 
 export const userRouter = createTRPCRouter({
   getAll: adminProcedure.query(async ({ ctx }) =>
@@ -20,7 +21,22 @@ export const userRouter = createTRPCRouter({
       },
     }),
   ),
-
+  getWaiters: adminProcedure.query(async ({ ctx }) =>
+    ctx.db.user.findMany({
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        address: true,
+        email: true,
+        phone: true,
+        dni: true,
+        role: true,
+        createdAt: true,
+      },
+      where: { role: UserRole.WAITER },
+    }),
+  ),
   create: adminProcedure
     .input(userCreateSchema)
     .mutation(async ({ ctx, input: userCreateData }) => {
@@ -62,7 +78,6 @@ export const userRouter = createTRPCRouter({
 
       return userCreated;
     }),
-
   edit: adminProcedure
     .input(userEditSchemaServer)
     .mutation(async ({ ctx, input: { userId, ...user } }) => {
