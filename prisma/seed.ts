@@ -215,6 +215,7 @@ async function main() {
       dni: "77030293",
       password: hashedPassword,
       role: UserRole.WAITER,
+      activeOrdersCount: 1,
     },
   });
 
@@ -229,6 +230,7 @@ async function main() {
     password: string;
     role?: UserRole;
     createdAt?: Date | string;
+    activeOrdersCount?: number | null;
   }[];
 
   const Roles = [UserRole.CHEF, UserRole.HOST, UserRole.WAITER];
@@ -236,6 +238,8 @@ async function main() {
   for (let index = 0; index < 20; index++) {
     const firstName = faker.person.firstName();
     const lastName = faker.person.lastName();
+
+    const role = Roles[faker.number.int({ min: 0, max: 2 })]!;
 
     fakeUsers.push({
       firstName,
@@ -245,7 +249,8 @@ async function main() {
       password: hashedPassword,
       phone: "987654321",
       address: faker.location.streetAddress(),
-      role: Roles[faker.number.int({ min: 0, max: 2 })]!,
+      role,
+      activeOrdersCount: role === UserRole.WAITER ? 0 : null,
     });
   }
 

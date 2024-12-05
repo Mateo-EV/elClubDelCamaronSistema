@@ -33,6 +33,7 @@ export const userRouter = createTRPCRouter({
         dni: true,
         role: true,
         createdAt: true,
+        activeOrdersCount: true,
       },
       where: { role: UserRole.WAITER },
     }),

@@ -30,6 +30,8 @@ model User {
 
     role UserRole @default(WAITER)
 
+    activeOrdersCount Int?
+
     sessions Session[]
     orders   Order[]
 

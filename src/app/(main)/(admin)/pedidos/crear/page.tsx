@@ -1,6 +1,7 @@
 "use client";
 
 import { ClientSelector } from "@/app/(main)/_components/utils/ClientSelector";
+import { WaiterSelector } from "@/app/(main)/_components/utils/WaiterSelector";
 import { Form } from "@/components/FormControllers";
 import {
   Card,
@@ -36,7 +37,7 @@ export default function AdminCreateOrderPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <FormField
               control={form.control}
               name="clientId"
@@ -52,15 +53,21 @@ export default function AdminCreateOrderPage() {
                 </FormItem>
               )}
             />
-            {/* <FormComboboxController
+            <FormField
               control={form.control}
               name="waiterId"
-              emptyMessage="Mozos no encontrados"
-              label="Mozo"
-              placeholder="Seleccionar Mozo"
-              searchPlaceholder="Buscar mozo..."
-              options={}
-            /> */}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Mozo</FormLabel>
+                  <FormControl>
+                    <WaiterSelector
+                      waiterId={field.value}
+                      setWaiterId={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
           </div>
         </CardContent>
       </Card>
