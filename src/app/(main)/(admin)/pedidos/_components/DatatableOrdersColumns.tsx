@@ -41,6 +41,9 @@ export const ordersTableColums = [
         original: { status },
       },
     }) => <Badge variant={status}>{ORDER_STATUS[status]}</Badge>,
+    filterFn: (row, id, values: string[]) => {
+      return values.includes(row.getValue(id));
+    },
   },
   {
     id: "Acciones",

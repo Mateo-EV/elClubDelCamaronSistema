@@ -24,10 +24,16 @@ export const productsTableColums = [
   {
     id: "Categoría",
     accessorKey: "category.name",
+    filterFn: (row, id, values: string[]) => {
+      return values.includes(row.getValue(id));
+    },
   },
   {
     id: "Sección",
     accessorKey: "section.name",
+    filterFn: (row, id, values: string[]) => {
+      return values.includes(row.getValue(id));
+    },
   },
   {
     id: "Pedidos",
