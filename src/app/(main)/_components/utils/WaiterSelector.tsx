@@ -9,10 +9,17 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { api, type RouterOutputs } from "@/trpc/react";
 import {
   ChevronsUpDownIcon,
+  IdCardIcon,
   MailIcon,
   PhoneIcon,
   SearchIcon,
@@ -72,7 +79,7 @@ const WaiterSelectorHandle = ({
         <Button variant="outline" className="w-full justify-between">
           {selectedWaiter ? (
             <div className="flex items-center">
-              <Avatar className="mr-2 h-6 w-6">
+              <Avatar className="mr-2 size-6">
                 <AvatarFallback>
                   {selectedWaiter.firstName.charAt(0)}
                 </AvatarFallback>
@@ -96,6 +103,18 @@ const WaiterSelectorHandle = ({
   );
 };
 
+const getWorkloadColor = (assignedOrders: number) => {
+  if (assignedOrders > 7) return "bg-red-500 text-white hover:bg-red-500";
+  if (assignedOrders > 3) return "bg-yellow-500 text-black hover:bg-yellow-500";
+  return "bg-green-500 text-white hover:bg-green-500";
+};
+
+const getWorkloadText = (assignedOrders: number) => {
+  if (assignedOrders > 7) return "Alta";
+  if (assignedOrders > 3) return "Media";
+  return "Baja";
+};
+
 const WaiterSelectorContent = ({
   waiters,
   setWaiterId,
@@ -109,20 +128,34 @@ const WaiterSelectorContent = ({
   const { setOpen } = useModalReponsive();
   const [search, setSearch] = useState("");
   const filteredWaiters = useMemo(() => {
-    let result = waiters;
+    let result = [...waiters].sort(
+      (a, b) => a.activeOrdersCount! - b.activeOrdersCount!,
+    );
+
     if (search) {
       const searchLower = search.toLowerCase();
-      result = waiters.filter(
-        (waiter) =>
+      result = waiters.reduce((acc, waiter) => {
+        if (acc.length >= 5) return acc; // Detener si ya hay 5 resultados
+        if (
           waiter.firstName.toLowerCase().includes(searchLower) ||
           waiter.lastName.toLowerCase().includes(searchLower) ||
-          waiter.email.toLowerCase().includes(searchLower),
-      );
+          waiter.email.toLowerCase().includes(searchLower) ||
+          waiter.phone.toLowerCase().includes(searchLower) ||
+          waiter.dni.toLowerCase().includes(searchLower) ||
+          waiter.activeOrdersCount!.toString().includes(searchLower)
+        ) {
+          acc.push(waiter);
+        }
+        return acc;
+      }, [] as WaiterFromApi[]);
     }
+
     if (selectedWaiter && !result.some((c) => c.id === selectedWaiter.id)) {
-      result = [selectedWaiter, ...result];
+      return [selectedWaiter, ...result].slice(0, 5); // Asegurar solo los primeros 5 resultados
     }
+
     return result.slice(0, 5);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, selectedWaiter]);
 
@@ -133,7 +166,7 @@ const WaiterSelectorContent = ({
   };
 
   return (
-    <>
+    <TooltipProvider delayDuration={0}>
       <div className="sticky top-0 z-50 bg-background pb-4 pt-2 md:pt-0">
         <div className="relative">
           <SearchIcon className="absolute left-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -155,46 +188,49 @@ const WaiterSelectorContent = ({
             <div
               key={waiter.id}
               className={cn(
-                "flex cursor-pointer flex-col rounded-lg p-4 transition-colors duration-200",
-                selectedWaiter?.id === waiter.id
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-card hover:bg-accent hover:text-accent-foreground",
+                "flex cursor-pointer flex-col rounded-lg border bg-card p-4 transition-colors duration-200 hover:bg-accent hover:text-accent-foreground",
+                selectedWaiter?.id === waiter.id &&
+                  "ring ring-primary ring-offset-2",
               )}
               onClick={() => handleSelect(waiter)}
             >
-              <div className="mb-2 flex items-center justify-between">
-                <div className="flex items-center">
+              <div className="mb-2 flex w-full items-center justify-between">
+                <div className="flex w-10/12 items-center">
                   <Avatar className="mr-3 h-10 w-10">
-                    <AvatarFallback
-                      className={cn(
-                        waiter.id === selectedWaiter?.id && "text-primary",
-                      )}
-                    >
+                    <AvatarFallback>
                       {waiter.firstName.charAt(0)}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="w-7/12 truncate text-lg font-medium">
+                  <span className="truncate text-lg font-medium">
                     {waiter.firstName + " " + waiter.lastName}
                   </span>
                 </div>
-                <Badge
-                  variant={
-                    waiter.activeOrdersCount! > 3 ? "destructive" : "secondary"
-                  }
-                >
-                  {waiter.activeOrdersCount}
-                </Badge>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Badge
+                      className={getWorkloadColor(waiter.activeOrdersCount!)}
+                    >
+                      {waiter.activeOrdersCount}
+                    </Badge>
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-neutral-900">
+                    Carga de Trabajo:{" "}
+                    {getWorkloadText(waiter.activeOrdersCount!)}
+                  </TooltipContent>
+                </Tooltip>
               </div>
-              <div className="grid grid-cols-[16px_1fr] gap-2 text-sm">
-                <MailIcon className="h-4 w-4" />
+              <div className="grid grid-cols-[16px_1fr] items-center gap-2 text-sm">
+                <MailIcon className="size-4" />
                 <span className="truncate">{waiter.email}</span>
-                <PhoneIcon className="h-4 w-4" />
+                <PhoneIcon className="size-4" />
                 <span>{waiter.phone}</span>
+                <IdCardIcon className="size-4" />
+                <span>{waiter.dni}</span>
               </div>
             </div>
           ))
         )}
       </div>
-    </>
+    </TooltipProvider>
   );
 };

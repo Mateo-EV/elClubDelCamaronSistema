@@ -10,6 +10,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import {
+  BetweenVerticalEnd,
   CookingPotIcon,
   LayoutDashboardIcon,
   LayoutTemplateIcon,
@@ -29,6 +30,7 @@ const items = [
   { name: "Productos", url: "/productos", icon: CookingPotIcon },
   { name: "Categorías", url: "/categorias", icon: SquareMenuIcon },
   { name: "Secciones", url: "/secciones", icon: LayoutTemplateIcon },
+  { name: "Mesas", url: "/mesas", icon: BetweenVerticalEnd },
 ];
 
 export const AppSidebarContent = () => {

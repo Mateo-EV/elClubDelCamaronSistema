@@ -1,4 +1,4 @@
-import { OrderStatus, UserRole } from "@prisma/client";
+import { OrderStatus, TableStatus, UserRole } from "@prisma/client";
 import {
   ChefHatIcon,
   HandPlatterIcon,
@@ -29,4 +29,10 @@ export const ORDER_STATUS = {
   [OrderStatus.InProcess]: "En Proceso",
   [OrderStatus.Canceled]: "Cancelado",
   [OrderStatus.Completed]: "Completado",
+};
+
+export const TABLE_STATUS = {
+  [TableStatus.Available]: "Disponible",
+  [TableStatus.Occupied]: "En uso",
+  [TableStatus.Reserved]: "Reservada",
 };

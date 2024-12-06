@@ -71,7 +71,7 @@ const ClientSelectorHandle = ({
         <Button variant="outline" className="w-full justify-between">
           {selectedCustomer ? (
             <div className="flex items-center">
-              <Avatar className="mr-2 h-6 w-6">
+              <Avatar className="mr-2 size-6">
                 <AvatarFallback>
                   {selectedCustomer.firstName.charAt(0)}
                 </AvatarFallback>
@@ -111,19 +111,27 @@ const CustomerSelectorContent = ({
   const [search, setSearch] = useState("");
   const filteredCustomers = useMemo(() => {
     let result = customers;
+
     if (search) {
       const searchLower = search.toLowerCase();
-      result = customers.filter(
-        (customer) =>
+      result = customers.reduce((acc, customer) => {
+        if (acc.length >= 5) return acc;
+        if (
           customer.firstName.toLowerCase().includes(searchLower) ||
           customer.lastName.toLowerCase().includes(searchLower) ||
           customer.email.toLowerCase().includes(searchLower) ||
-          customer.phone.includes(search),
-      );
+          customer.phone.includes(search)
+        ) {
+          acc.push(customer);
+        }
+        return acc;
+      }, [] as CustomerFromApi[]);
     }
+
     if (selectedCustomer && !result.some((c) => c.id === selectedCustomer.id)) {
-      result = [selectedCustomer, ...result];
+      return [selectedCustomer, ...result].slice(0, 5);
     }
+
     return result.slice(0, 5);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, selectedCustomer]);
@@ -157,20 +165,15 @@ const CustomerSelectorContent = ({
             <div
               key={customer.id}
               className={cn(
-                "flex cursor-pointer flex-col rounded-lg p-4 transition-colors duration-200",
-                selectedCustomer?.id === customer.id
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-card hover:bg-accent hover:text-accent-foreground",
+                "flex cursor-pointer flex-col rounded-lg border bg-card p-4 transition-colors duration-200 hover:bg-accent hover:text-accent-foreground",
+                selectedCustomer?.id === customer.id &&
+                  "ring ring-primary ring-offset-2",
               )}
               onClick={() => handleSelect(customer)}
             >
               <div className="mb-2 flex items-center">
                 <Avatar className="mr-3 h-10 w-10">
-                  <AvatarFallback
-                    className={cn(
-                      customer.id === selectedCustomer?.id && "text-primary",
-                    )}
-                  >
+                  <AvatarFallback>
                     {customer.firstName.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
@@ -179,9 +182,9 @@ const CustomerSelectorContent = ({
                 </span>
               </div>
               <div className="grid grid-cols-[16px_1fr] gap-2 text-sm">
-                <MailIcon className="h-4 w-4" />
+                <MailIcon className="size-4" />
                 <span className="truncate">{customer.email}</span>
-                <PhoneIcon className="h-4 w-4" />
+                <PhoneIcon className="size-4" />
                 <span>{customer.phone}</span>
               </div>
             </div>

@@ -28,7 +28,7 @@ export default function AdminCreateOrderPage() {
   });
 
   return (
-    <Form {...form} className="grid-cols-1 lg:grid-cols-2">
+    <Form {...form} className="grid-cols-1 sm:grid-cols-1 lg:grid-cols-2">
       <Card>
         <CardHeader>
           <CardTitle>Información General</CardTitle>
@@ -37,7 +37,7 @@ export default function AdminCreateOrderPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
             <FormField
               control={form.control}
               name="clientId"

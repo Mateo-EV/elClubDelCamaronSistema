@@ -1,5 +1,5 @@
 import { hash } from "@/lib/argon";
-import { PrismaClient, UserRole } from "@prisma/client";
+import { PrismaClient, TableStatus, UserRole } from "@prisma/client";
 import { faker } from "@faker-js/faker";
 
 const prisma = new PrismaClient();
@@ -295,7 +295,7 @@ async function main() {
   const table = await prisma.table.create({
     data: {
       capacity: 4,
-      status: "Available",
+      status: "Occupied",
     },
   });
 
@@ -338,6 +338,28 @@ async function main() {
     where: { id: order.id },
     data: { total },
   });
+
+  const possibleStatuses = [
+    TableStatus.Available,
+    TableStatus.Occupied,
+    TableStatus.Reserved,
+  ];
+
+  // Creamos 30 mesas
+  for (let i = 1; i <= 30; i++) {
+    // Generamos una capacidad aleatoria entre 2 y 8, por ejemplo
+    const capacity = Math.floor(Math.random() * (8 - 2 + 1)) + 2;
+    // Seleccionamos un estado aleatorio
+    const status =
+      possibleStatuses[Math.floor(Math.random() * possibleStatuses.length)]!;
+
+    await prisma.table.create({
+      data: {
+        capacity,
+        status,
+      },
+    });
+  }
 }
 
 main()
