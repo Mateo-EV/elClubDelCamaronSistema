@@ -15,7 +15,6 @@ import {
   MailIcon,
   PhoneIcon,
   SearchIcon,
-  XIcon,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 

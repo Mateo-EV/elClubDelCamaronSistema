@@ -1,6 +1,7 @@
 "use client";
 
 import { ClientSelector } from "@/app/(main)/_components/utils/ClientSelector";
+import { TableSelector } from "@/app/(main)/_components/utils/TableSelector";
 import { WaiterSelector } from "@/app/(main)/_components/utils/WaiterSelector";
 import { Form } from "@/components/FormControllers";
 import {
@@ -63,6 +64,21 @@ export default function AdminCreateOrderPage() {
                     <WaiterSelector
                       waiterId={field.value}
                       setWaiterId={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="tableId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Mesa</FormLabel>
+                  <FormControl>
+                    <TableSelector
+                      tableId={field.value}
+                      setTableId={field.onChange}
                     />
                   </FormControl>
                 </FormItem>

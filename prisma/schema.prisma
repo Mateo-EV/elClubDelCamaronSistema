@@ -120,13 +120,13 @@ model Order {
     paymentMethodId Int?
     clientId        Int
     waiterId        Int
-    tableId         Int?
+    tableId         Int
     notes           String?
 
     paymentMethod PaymentMethod? @relation(fields: [paymentMethodId], references: [id])
     client        Client         @relation(fields: [clientId], references: [id], onUpdate: Cascade)
     waiter        User           @relation(fields: [waiterId], references: [id], onUpdate: Cascade)
-    table         Table?         @relation(fields: [tableId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+    table         Table?         @relation(fields: [tableId], references: [id], onUpdate: Cascade)
 
     details OrderProduct[]
 }

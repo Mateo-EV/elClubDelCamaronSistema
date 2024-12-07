@@ -34,7 +34,7 @@ export const EditTableForm = ({ table }: EditTableFormProps) => {
 
       setOpen(false);
 
-      toast.success("Tablee actualizado");
+      toast.success("Mesa actualizada");
     },
   });
 
