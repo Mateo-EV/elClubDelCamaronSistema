@@ -299,16 +299,11 @@ async function main() {
     },
   });
 
-  await prisma.paymentMethod.createMany({
-    data: [{ name: "Tarjeta" }, { name: "Efectivo" }],
-  });
-
   // Creando un pedido con productos
   const order = await prisma.order.create({
     data: {
       status: "InProcess",
       total: 0, // Será calculado más adelante
-      paymentMethodId: 1,
       clientId: 1, // Juan Pérez
       waiterId: waiter.id,
       tableId: table.id,

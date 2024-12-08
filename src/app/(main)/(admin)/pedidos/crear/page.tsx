@@ -1,9 +1,16 @@
 "use client";
 
-import { ClientSelector } from "@/app/(main)/_components/utils/ClientSelector";
-import { TableSelector } from "@/app/(main)/_components/utils/TableSelector";
-import { WaiterSelector } from "@/app/(main)/_components/utils/WaiterSelector";
-import { Form } from "@/components/FormControllers";
+import { ClientSelector } from "@/app/(main)/_components/orders/ClientSelector";
+import { OrderDetailForm } from "@/app/(main)/_components/orders/OrderDetailForm";
+import { TableSelector } from "@/app/(main)/_components/orders/TableSelector";
+import { TotalOrder } from "@/app/(main)/_components/orders/TotalOrder";
+import { WaiterSelector } from "@/app/(main)/_components/orders/WaiterSelector";
+import {
+  Form,
+  FormSelectController,
+  FormTextAreaController,
+} from "@/components/FormControllers";
+import { SubmitButton } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -17,14 +24,19 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
+import { ORDER_STATUS } from "@/data/const";
 import useForm from "@/hooks/useForm";
+import { api } from "@/trpc/react";
 import { orderAdminCreateSchema } from "@/validators/order";
+import { ShoppingCartIcon } from "lucide-react";
 
 export default function AdminCreateOrderPage() {
+  const { mutate: createOrder, isPending } = api.order.create.useMutation();
   const form = useForm({
     schema: orderAdminCreateSchema,
-    onFastSubmit(values) {
-      console.log(values);
+    onFastSubmit: createOrder,
+    defaultValues: {
+      details: [{ productId: undefined, quantity: 1 }],
     },
   });
 
@@ -84,16 +96,50 @@ export default function AdminCreateOrderPage() {
                 </FormItem>
               )}
             />
+            <FormSelectController
+              control={form.control}
+              name="status"
+              label="Estado"
+              placeholder="Seleccionar estado"
+              options={Object.entries(ORDER_STATUS).map(([value, label]) => ({
+                label,
+                value,
+              }))}
+            />
+            <div className="col-span-full">
+              <FormTextAreaController
+                control={form.control}
+                name="notes"
+                label="Notas"
+                textarea={{
+                  placeholder: "Información extra sobre el pedido",
+                  minHeight: 80,
+                  maxHeight: 100,
+                }}
+              />
+            </div>
           </div>
         </CardContent>
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>Detalles del Pedido</CardTitle>
+          <CardTitle>
+            <ShoppingCartIcon className="mr-2 inline" />
+            <span className="align-middle">Detalles del Pedido</span>
+          </CardTitle>
           <CardDescription>
             Agregue los productos relacionados a este pedido
           </CardDescription>
         </CardHeader>
+        <CardContent>
+          <OrderDetailForm control={form.control} />
+        </CardContent>
+      </Card>
+      <Card className="col-span-full">
+        <div className="flex items-center justify-between p-6">
+          <TotalOrder control={form.control} />
+          <SubmitButton isSubmitting={isPending}>Crear Pedido</SubmitButton>
+        </div>
       </Card>
     </Form>
   );

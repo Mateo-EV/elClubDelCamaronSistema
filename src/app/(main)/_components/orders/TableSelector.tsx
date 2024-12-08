@@ -270,7 +270,7 @@ const TableSelectFilters = ({
                   value={statusFilter}
                 >
                   <SelectTrigger className="col-span-2">
-                    <SelectValue placeholder="Estado" />
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Todos</SelectItem>

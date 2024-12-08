@@ -113,29 +113,20 @@ enum OrderStatus {
 }
 
 model Order {
-    id              Int         @id @default(autoincrement())
-    createdAt       DateTime    @default(now())
-    status          OrderStatus
-    total           Float
-    paymentMethodId Int?
-    clientId        Int
-    waiterId        Int
-    tableId         Int
-    notes           String?
+    id        Int         @id @default(autoincrement())
+    createdAt DateTime    @default(now())
+    status    OrderStatus
+    total     Float
+    clientId  Int
+    waiterId  Int
+    tableId   Int
+    notes     String?
 
-    paymentMethod PaymentMethod? @relation(fields: [paymentMethodId], references: [id])
-    client        Client         @relation(fields: [clientId], references: [id], onUpdate: Cascade)
-    waiter        User           @relation(fields: [waiterId], references: [id], onUpdate: Cascade)
-    table         Table?         @relation(fields: [tableId], references: [id], onUpdate: Cascade)
+    client Client @relation(fields: [clientId], references: [id], onUpdate: Cascade)
+    waiter User   @relation(fields: [waiterId], references: [id], onUpdate: Cascade)
+    table  Table? @relation(fields: [tableId], references: [id], onUpdate: Cascade)
 
     details OrderProduct[]
-}
-
-model PaymentMethod {
-    id   Int    @id @default(autoincrement())
-    name String @unique
-
-    orders Order[]
 }
 
 model Category {

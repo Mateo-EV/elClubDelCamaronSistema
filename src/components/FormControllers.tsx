@@ -128,10 +128,12 @@ export const FormSelectController = <
           {/*eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */}
           <Select
             onValueChange={field.onChange}
-            defaultValue={String(field.value)}
+            defaultValue={
+              field.value !== undefined ? String(field.value) : field.value
+            }
           >
             <FormControl>
-              <SelectTrigger>
+              <SelectTrigger className="font-medium">
                 <SelectValue placeholder={placeholder} />
               </SelectTrigger>
             </FormControl>

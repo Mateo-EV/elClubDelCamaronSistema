@@ -78,11 +78,7 @@ const ComboboxValue = ({ placeholder }: { placeholder?: string }) => {
 
   return (
     <>
-      {chosen ? (
-        chosen.label
-      ) : (
-        <span className="text-muted-foreground">{placeholder}</span>
-      )}{" "}
+      {chosen ? chosen.label : <span>{placeholder}</span>}{" "}
       <CaretSortIcon className="ml-2 size-4 shrink-0 opacity-50" />
     </>
   );
