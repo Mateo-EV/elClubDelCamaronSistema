@@ -2,7 +2,7 @@ import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
-import { OrderStatus, ReservationStatus } from "@prisma/client";
+import { OrderStatus, ReservationStatus, WaitlistStatus } from "@prisma/client";
 
 const badgeVariants = cva(
   "inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
@@ -26,6 +26,12 @@ const badgeVariants = cva(
           "text-green-500 bg-green-500/40 hover:bg-green-500/20 border-transparent",
         [ReservationStatus.Confirmed]:
           "text-green-500 bg-green-500/40 hover:bg-green-500/20 border-transparent",
+        [WaitlistStatus.Seated]:
+          "text-green-500 bg-green-500/40 hover:bg-green-500/20 border-transparent",
+        [WaitlistStatus.Waiting]:
+          "text-yellow-500 bg-yellow-500/40 hover:bg-yellow-500/20 border-transparent",
+        [WaitlistStatus.Cancelled]:
+          "text-red-500 bg-red-500/40 hover:bg-red-500/20 border-transparent",
       },
     },
     defaultVariants: {

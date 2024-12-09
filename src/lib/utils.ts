@@ -50,3 +50,19 @@ const DATE_FORMAT = new Intl.DateTimeFormat("es-PE", {
 export function formatDate(date: Date) {
   return DATE_FORMAT.format(date);
 }
+
+export function getTodayFilters() {
+  const today = new Date();
+  const startOfDay = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+  );
+  const endOfDay = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate() + 1,
+  );
+
+  return { gte: startOfDay, lt: endOfDay };
+}

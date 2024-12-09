@@ -9,6 +9,7 @@ import { useMemo, useState } from "react";
 import { CreateTableForm } from "./CreateTableForm";
 import { TableFilters } from "./TableFilters";
 import { TableGrid } from "./TableGrid";
+import { useIsAdmin } from "@/hooks/useAdmin";
 
 export const TableContentPage = () => {
   const [tables] = api.table.getAll.useSuspenseQuery();
@@ -17,6 +18,7 @@ export const TableContentPage = () => {
     "desc" | "asc" | null
   >(null);
 
+  const isAdmin = useIsAdmin();
   const tablesFiltered = useMemo(() => {
     let result = tables;
 
@@ -44,18 +46,20 @@ export const TableContentPage = () => {
           sortCapacityOrder={sortCapacityOrder}
           setSortCapacityOrder={setSortCapacityOrder}
         />
-        <ModalResponsive
-          title="Nueva Mesa"
-          description="Registre una nueva mesa"
-          trigger={
-            <Button size="sm">
-              <PlusIcon className="size-4" />
-              Crear Mesa
-            </Button>
-          }
-        >
-          <CreateTableForm />
-        </ModalResponsive>
+        {isAdmin && (
+          <ModalResponsive
+            title="Nueva Mesa"
+            description="Registre una nueva mesa"
+            trigger={
+              <Button size="sm">
+                <PlusIcon className="size-4" />
+                Crear Mesa
+              </Button>
+            }
+          >
+            <CreateTableForm />
+          </ModalResponsive>
+        )}
       </div>
       <TableGrid tables={tablesFiltered} />
     </div>

@@ -7,9 +7,11 @@ import { api } from "@/trpc/react";
 import { PlusIcon } from "lucide-react";
 import { CreateReservationForm } from "./CreateReservationForm";
 import { reservationsTableColums } from "./DataTableReservationsColumns";
+import { useIsAdmin } from "@/hooks/useAdmin";
 
 export const DataTableReservations = () => {
   const [reservations] = api.reservation.getAll.useSuspenseQuery();
+  const isAdmin = useIsAdmin();
 
   return (
     <DataTable
@@ -17,18 +19,20 @@ export const DataTableReservations = () => {
       columns={reservationsTableColums}
       placeholderSearchInput="Filtrar reservas..."
     >
-      <ModalResponsive
-        title="Nueva Reservación"
-        description="Registre una nueva reservación"
-        trigger={
-          <Button size="sm">
-            <PlusIcon className="size-4" />
-            Crear Reservación
-          </Button>
-        }
-      >
-        <CreateReservationForm />
-      </ModalResponsive>
+      {isAdmin && (
+        <ModalResponsive
+          title="Nueva Reservación"
+          description="Registre una nueva reservación"
+          trigger={
+            <Button size="sm">
+              <PlusIcon className="size-4" />
+              Crear Reservación
+            </Button>
+          }
+        >
+          <CreateReservationForm />
+        </ModalResponsive>
+      )}
     </DataTable>
   );
 };

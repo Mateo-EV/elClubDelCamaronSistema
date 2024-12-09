@@ -3,6 +3,7 @@ import {
   ReservationStatus,
   TableStatus,
   UserRole,
+  WaitlistStatus,
 } from "@prisma/client";
 import {
   ChefHatIcon,
@@ -46,4 +47,10 @@ export const RESERVATION_STATUS = {
   [ReservationStatus.Canceled]: "Cancelado",
   [ReservationStatus.Confirmed]: "Confirmado",
   [ReservationStatus.Pending]: "Pendiente",
+};
+
+export const WAITLIST_STATUS = {
+  [WaitlistStatus.Waiting]: "Esperando",
+  [WaitlistStatus.Cancelled]: "Cancelado",
+  [WaitlistStatus.Seated]: "Asignado",
 };

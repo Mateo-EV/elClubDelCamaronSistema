@@ -15,3 +15,8 @@ export type reservationSchemaType = z.infer<typeof reservationSchema>;
 export const reservationEditServerSchema = reservationSchema.extend({
   reservationId: z.number(),
 });
+
+export const confirmReservationSchema = z.object({
+  waiterId: z.coerce.number({ message: "El mozo es obligatorio" }),
+  reservationId: z.number(),
+});

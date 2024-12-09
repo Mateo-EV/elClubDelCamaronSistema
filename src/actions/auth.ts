@@ -9,8 +9,18 @@ import { cookies } from "next/headers";
 import { ActionResponse } from "./general";
 import { getSession } from "@/server/auth/session";
 import { redirect } from "next/navigation";
+import { UserRole } from "@prisma/client";
+
+const LOGIN_REDIRECT_ROLE = {
+  [UserRole.ADMIN]: "/dashboard",
+  [UserRole.CHEF]: "/dashboard",
+  [UserRole.HOST]: "/lista-de-espera",
+  [UserRole.WAITER]: "/dashboard",
+};
 
 export async function login(data: loginSchemaType) {
+  let existingUser;
+
   try {
     const { success } = loginSchema.safeParse(data);
 
@@ -20,7 +30,7 @@ export async function login(data: loginSchemaType) {
 
     if (!userId) return ActionResponse.error("Incorrect username or password");
 
-    const existingUser = await db.user.findUnique({ where: { id: userId } });
+    existingUser = await db.user.findUnique({ where: { id: userId } });
 
     if (!existingUser)
       return ActionResponse.error("Incorrect username or password");
@@ -42,7 +52,7 @@ export async function login(data: loginSchemaType) {
     return ActionResponse.error("Something went wrong");
   }
 
-  return ActionResponse.redirect("/dashboard");
+  return ActionResponse.redirect(LOGIN_REDIRECT_ROLE[existingUser.role]);
 }
 
 export async function logout() {

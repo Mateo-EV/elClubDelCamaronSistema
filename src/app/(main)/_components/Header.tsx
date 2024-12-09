@@ -12,9 +12,12 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { usePathname } from "next/navigation";
 import { AuthAvatar } from "./AuthAvatar";
+import { useAuth } from "@/providers/AuthProvider";
+import { UserRole } from "@prisma/client";
 
 export const Header = () => {
   const pathname = usePathname();
+  const { user } = useAuth();
 
   const pathnameDivided = pathname.split("/").filter(Boolean);
 
@@ -26,10 +29,14 @@ export const Header = () => {
           <Separator orientation="vertical" className="mr-2 h-4" />
           <Breadcrumb>
             <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">
-                Gestión
-              </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
+              {user.role === UserRole.ADMIN && (
+                <>
+                  <BreadcrumbItem className="hidden md:block">
+                    Gestión
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator className="hidden md:block" />
+                </>
+              )}
               {pathnameDivided.map((path, index) => (
                 <>
                   <BreadcrumbItem
@@ -37,7 +44,9 @@ export const Header = () => {
                     key={path}
                   >
                     {index === pathnameDivided.length - 1 ? (
-                      <BreadcrumbPage>{path}</BreadcrumbPage>
+                      <BreadcrumbPage>
+                        {path.split("-").join(" ")}
+                      </BreadcrumbPage>
                     ) : (
                       <BreadcrumbLink
                         href={`${pathnameDivided

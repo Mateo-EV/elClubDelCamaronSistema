@@ -1,7 +1,11 @@
 import { hash } from "@/lib/argon";
 import { userCreateSchema, userEditSchemaServer } from "@/validators/user";
 import { TRPCError } from "@trpc/server";
-import { adminProcedure, createTRPCRouter } from "../trpc";
+import {
+  adminOrHostProcedure,
+  adminProcedure,
+  createTRPCRouter,
+} from "../trpc";
 import { z } from "zod";
 import { UserRole } from "@prisma/client";
 
@@ -21,7 +25,7 @@ export const userRouter = createTRPCRouter({
       },
     }),
   ),
-  getWaiters: adminProcedure.query(async ({ ctx }) =>
+  getWaiters: adminOrHostProcedure.query(async ({ ctx }) =>
     ctx.db.user.findMany({
       select: {
         id: true,
