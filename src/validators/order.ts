@@ -5,9 +5,6 @@ export const orderAdminCreateSchema = z.object({
   status: z.nativeEnum(OrderStatus, {
     message: "El estado del pedido es obligatorio",
   }),
-  paymentMethodId: z.coerce.number({
-    message: "El método de pago es obligatorio",
-  }),
   clientId: z.coerce.number({ message: "El cliente es obligatorio" }),
   waiterId: z.coerce.number({ message: "El mozo es obligatorio" }),
   tableId: z.coerce.number({ message: "La mesa es obligatoria" }),
@@ -34,9 +31,6 @@ export const orderAdminEditSchema = z.object({
   status: z.nativeEnum(OrderStatus, {
     message: "El estado del pedido es obligatorio",
   }),
-  paymentMethodId: z.coerce.number({
-    message: "El método de pago es obligatorio",
-  }),
   clientId: z.coerce.number({ message: "El cliente es obligatorio" }),
   waiterId: z.coerce.number({ message: "El mozo es obligatorio" }),
   tableId: z.coerce.number({ message: "La mesa es obligatoria" }),
@@ -54,5 +48,6 @@ export const orderAdminEditSchema = z.object({
           .min(1, { message: "La cantidad debe ser mayor que 0" }),
       }),
     )
-    .min(1, "El pedido debe tener al menos un pedido"),
+    .min(1, "Debe haber al menos un producto para editar el pedido"),
+  orderId: z.number(),
 });

@@ -19,7 +19,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 type ComboboxContextProps = {
-  chosen: { label: React.ReactNode | null; value: string } | null;
+  chosen: { label: React.ReactNode | string | null; value: string } | null;
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setChosen: React.Dispatch<
@@ -37,15 +37,24 @@ const useCombobox = () => useContext(ComboboxContext);
 const Combobox = ({
   onValueChange,
   defaultValue,
+  options,
   ...props
 }: Omit<PopoverProps, "open" | "onOpenChange" | "defaultOpen"> & {
   onValueChange: (value: string | null) => void;
   defaultValue?: string;
+  options?: { label: React.ReactNode | string; value: string }[];
 }) => {
   const [open, setOpen] = useState(false);
   const [chosen, setChosen] = useState<ComboboxContextProps["chosen"]>(
     defaultValue ? { label: null, value: defaultValue } : null,
   );
+
+  useEffect(() => {
+    if (options && chosen?.value && chosen.label === null) {
+      setChosen((p) => options.find((o) => o.value === p!.value) ?? null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     onValueChange(chosen?.value ?? null);

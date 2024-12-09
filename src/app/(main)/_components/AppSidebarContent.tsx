@@ -9,8 +9,10 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import {
   BetweenVerticalEnd,
+  CalendarIcon,
   CookingPotIcon,
   LayoutDashboardIcon,
   LayoutTemplateIcon,
@@ -25,6 +27,7 @@ import { usePathname } from "next/navigation";
 const items = [
   { name: "Dashboard", url: "/dashboard", icon: LayoutDashboardIcon },
   { name: "Pedidos", url: "/pedidos", icon: NotebookPenIcon },
+  { name: "Reservas", url: "/reservas", icon: CalendarIcon },
   { name: "Usuarios", url: "/usuarios", icon: Users2Icon },
   { name: "Clientes", url: "/clientes", icon: TargetIcon },
   { name: "Productos", url: "/productos", icon: CookingPotIcon },
@@ -45,18 +48,24 @@ export const AppSidebarContent = () => {
     <SidebarContent>
       <SidebarGroup>
         <SidebarGroupLabel>Gestión</SidebarGroupLabel>
-        <SidebarMenu>
-          {items.map((item) => (
-            <SidebarMenuItem key={item.name}>
-              <SidebarMenuButton asChild isActive={pathname === item.url}>
-                <Link href={item.url} onClick={closeSidebar}>
-                  <item.icon />
-                  <span>{item.name}</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
+        <TooltipProvider delayDuration={0}>
+          <SidebarMenu>
+            {items.map((item) => (
+              <SidebarMenuItem key={item.name}>
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname === item.url}
+                  tooltip={item.name}
+                >
+                  <Link href={item.url} onClick={closeSidebar}>
+                    <item.icon />
+                    <span>{item.name}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </TooltipProvider>
       </SidebarGroup>
     </SidebarContent>
   );

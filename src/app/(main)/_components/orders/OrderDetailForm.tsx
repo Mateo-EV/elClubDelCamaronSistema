@@ -13,16 +13,10 @@ import { useFieldArray, useWatch, type Control } from "react-hook-form";
 
 type OrderDetailFormProps = {
   control: Control<{
-    status: "Pending" | "InProcess" | "Canceled" | "Completed";
-    paymentMethodId: number;
-    clientId: number;
-    waiterId: number;
-    tableId: number;
     details: {
       productId: number;
       quantity: number;
     }[];
-    notes?: string | null;
   }>;
 };
 
@@ -34,17 +28,19 @@ export const OrderDetailForm = ({ control }: OrderDetailFormProps) => {
     control,
   });
 
-  const productsIdChoosen = new Set(
-    useWatch({ control, name: "details" })?.map(({ productId }) => productId),
+  const productsIdChoosen = new Set<string>(
+    useWatch({ control, name: "details" })?.map(
+      ({ productId }) => productId as unknown as string,
+    ),
   );
 
   if (isLoading || !products) {
     return <Skeleton className="h-36" />;
   }
-  const availableProducts = products.filter(
-    (product) =>
-      !productsIdChoosen.has(product.id.toString() as unknown as number),
-  );
+  // const availableProducts = products.filter(
+  //   (product) =>
+  //     !productsIdChoosen.has(product.id.toString() as unknown as number),
+  // );
 
   return (
     <div className="divide-y md:space-y-4 md:divide-y-0">
@@ -60,13 +56,11 @@ export const OrderDetailForm = ({ control }: OrderDetailFormProps) => {
             label="Producto"
             searchPlaceholder="Buscar productos..."
             placeholder="Seleccionar Producto"
-            options={(Item) =>
-              availableProducts.map((p) => (
-                <Item key={p.id} value={p.id.toString()}>
-                  {p.name} - {formatPrice(p.price)}
-                </Item>
-              ))
-            }
+            options={products.map((p) => ({
+              value: p.id.toString(),
+              label: `${p.name} - ${formatPrice(p.price)}`,
+              disabled: productsIdChoosen.has(p.id.toString()),
+            }))}
           />
           <FormInputController
             control={control}

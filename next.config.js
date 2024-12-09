@@ -8,9 +8,6 @@ await import("./src/env.js");
 const config = {
   experimental: {
     serverComponentsExternalPackages: ["@node-rs/argon2"],
-    staleTimes: {
-      dynamic: 5 * 60,
-    },
   },
 };
 

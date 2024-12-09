@@ -73,9 +73,9 @@ model Reservation {
     createdAt   DateTime          @default(now())
 
     clientId Int
-    tableId  Int?
+    tableId  Int
     client   Client @relation(fields: [clientId], references: [id], onUpdate: Cascade)
-    table    Table? @relation(fields: [tableId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+    table    Table  @relation(fields: [tableId], references: [id], onUpdate: Cascade)
 }
 
 model OrderProduct {
@@ -85,7 +85,7 @@ model OrderProduct {
     orderId   Int // Relación con el pedido
     productId Int // Relación con el producto
 
-    order   Order   @relation(fields: [orderId], references: [id], onUpdate: Cascade)
+    order   Order   @relation(fields: [orderId], references: [id], onUpdate: Cascade, onDelete: Cascade)
     product Product @relation(fields: [productId], references: [id], onUpdate: Cascade)
 
     @@id([orderId, productId])

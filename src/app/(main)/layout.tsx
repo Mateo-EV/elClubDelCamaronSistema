@@ -20,13 +20,13 @@ export default async function MainLayout({
   return (
     <AuthProvider session={session}>
       <SidebarProvider>
-        <AppSidebar />
-        <SidebarInset>
-          <Header />
-          <TRPCReactProvider>
+        <TRPCReactProvider>
+          <AppSidebar />
+          <SidebarInset>
+            <Header />
             <div className="flex-1 p-4 pt-0">{children}</div>
-          </TRPCReactProvider>
-        </SidebarInset>
+          </SidebarInset>
+        </TRPCReactProvider>
       </SidebarProvider>
     </AuthProvider>
   );

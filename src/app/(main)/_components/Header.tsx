@@ -39,7 +39,14 @@ export const Header = () => {
                     {index === pathnameDivided.length - 1 ? (
                       <BreadcrumbPage>{path}</BreadcrumbPage>
                     ) : (
-                      <BreadcrumbLink href={`/${path}`}>{path}</BreadcrumbLink>
+                      <BreadcrumbLink
+                        href={`${pathnameDivided
+                          .slice(0, index)
+                          .map((path) => `/${path}`)
+                          .join("")}/${path}`}
+                      >
+                        {path}
+                      </BreadcrumbLink>
                     )}
                   </BreadcrumbItem>
                   {index !== pathnameDivided.length - 1 && (

@@ -32,6 +32,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { DateTimePicker } from "./ui/datetime-picker";
 
 type FormInputControllerProps<
   TFieldValues extends FieldValues = FieldValues,
@@ -160,9 +161,11 @@ type FormComboboxControllerProps<
   label: string;
   searchPlaceholder: string;
   emptyMessage: string;
-  options: (
-    item: typeof ComboboxItem,
-  ) => JSX.Element | JSX.Element[] | undefined;
+  options: {
+    label: string | React.ReactNode;
+    value: string;
+    disabled?: boolean;
+  }[];
 };
 
 export const FormComboboxController = <
@@ -183,7 +186,13 @@ export const FormComboboxController = <
         <FormItem>
           <FormLabel>{label}</FormLabel>
           {/*eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */}
-          <Combobox onValueChange={field.onChange} defaultValue={field.value}>
+          <Combobox
+            onValueChange={field.onChange}
+            defaultValue={
+              field.value !== undefined ? String(field.value) : field.value
+            }
+            options={options}
+          >
             <FormControl>
               <ComboboxTrigger>
                 <ComboboxValue placeholder={placeholder} />
@@ -193,9 +202,51 @@ export const FormComboboxController = <
               emptyMessage={emptyMessage}
               searchPlaceholder={searchPlaceholder}
             >
-              {options(ComboboxItem)}
+              {options.map(({ label, value, disabled }) => (
+                <ComboboxItem key={value} value={value} disabled={disabled}>
+                  {label}
+                </ComboboxItem>
+              ))}
             </ComboboxContent>
           </Combobox>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
+
+type FormDateTimeControllerProps<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+> = Omit<ControllerProps<TFieldValues, TName>, "render"> & {
+  label: string;
+  picker?: Omit<
+    React.ComponentPropsWithoutRef<typeof DateTimePicker>,
+    "date" | "setDate"
+  >;
+};
+
+export const FormDateTimeController = <
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+>({
+  label,
+  picker = {},
+  ...props
+}: FormDateTimeControllerProps<TFieldValues, TName>) => {
+  return (
+    <FormField
+      {...props}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>{label}</FormLabel>
+          {/*eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */}
+          <DateTimePicker
+            date={field.value}
+            setDate={field.onChange}
+            {...picker}
+          />
           <FormMessage />
         </FormItem>
       )}

@@ -1,4 +1,9 @@
-import { OrderStatus, TableStatus, UserRole } from "@prisma/client";
+import {
+  OrderStatus,
+  ReservationStatus,
+  TableStatus,
+  UserRole,
+} from "@prisma/client";
 import {
   ChefHatIcon,
   HandPlatterIcon,
@@ -35,4 +40,10 @@ export const TABLE_STATUS = {
   [TableStatus.Available]: "Disponible",
   [TableStatus.Occupied]: "En uso",
   [TableStatus.Reserved]: "Reservada",
+};
+
+export const RESERVATION_STATUS = {
+  [ReservationStatus.Canceled]: "Cancelado",
+  [ReservationStatus.Confirmed]: "Confirmado",
+  [ReservationStatus.Pending]: "Pendiente",
 };

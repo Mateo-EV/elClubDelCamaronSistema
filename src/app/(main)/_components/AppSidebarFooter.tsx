@@ -1,23 +1,17 @@
 "use client";
 
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-} from "lucide-react";
+import { ChevronsUpDown, LogOut } from "lucide-react";
 
+import { logout } from "@/actions/auth";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import {
   SidebarFooter,
   SidebarMenu,
@@ -26,10 +20,9 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/providers/AuthProvider";
-import { AuthAvatar } from "./AuthAvatar";
 import React, { useTransition } from "react";
-import { logout } from "@/actions/auth";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { AuthAvatar } from "./AuthAvatar";
+import { api } from "@/trpc/react";
 
 export const AppSidebarFooter = () => {
   const { isMobile } = useSidebar();
@@ -73,8 +66,8 @@ export const AppSidebarFooter = () => {
                   </div>
                 </div>
               </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuGroup>
+              {/* <DropdownMenuSeparator /> */}
+              {/* <DropdownMenuGroup>
                 <DropdownMenuItem>
                   <Sparkles />
                   Upgrade to Pro
@@ -94,7 +87,7 @@ export const AppSidebarFooter = () => {
                   <Bell />
                   Notifications
                 </DropdownMenuItem>
-              </DropdownMenuGroup>
+              </DropdownMenuGroup> */}
               <DropdownMenuSeparator />
               <LogoutButton />
             </DropdownMenuContent>
@@ -107,19 +100,21 @@ export const AppSidebarFooter = () => {
 
 const LogoutButton = () => {
   const [isPending, startTransition] = useTransition();
+  const utils = api.useUtils();
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
 
     startTransition(async () => {
       await logout();
+      void utils.invalidate();
     });
   };
 
   return (
     <DropdownMenuItem onClick={handleClick}>
       {isPending ? <LoadingSpinner /> : <LogOut />}
-      Log out
+      Cerrar Sesión
     </DropdownMenuItem>
   );
 };
