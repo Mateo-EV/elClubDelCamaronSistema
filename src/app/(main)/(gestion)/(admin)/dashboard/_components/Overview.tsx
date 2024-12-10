@@ -2,7 +2,7 @@
 
 import { ChartContainer } from "@/components/ui/chart";
 import { formatPrice } from "@/lib/utils";
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, XAxis, YAxis } from "recharts";
 
 export interface MonthlyRevenue {
   month: string;

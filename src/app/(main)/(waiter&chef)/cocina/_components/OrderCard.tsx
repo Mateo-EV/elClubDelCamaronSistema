@@ -12,7 +12,7 @@ import { ORDER_STATUS } from "@/data/const";
 import { formatId } from "@/lib/utils";
 import { type RouterOutputs } from "@/trpc/react";
 import { OrderStatus } from "@prisma/client";
-import { CheckIcon, CircleXIcon, ClockIcon, UserIcon } from "lucide-react";
+import { CheckIcon, ClockIcon, UserIcon } from "lucide-react";
 import { useRef } from "react";
 import { CompleteOrderConfirm } from "./CompleteOrderConfirm";
 

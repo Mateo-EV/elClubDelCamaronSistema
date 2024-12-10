@@ -3,17 +3,14 @@
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ROLES_DATA } from "@/data/const";
 import { useAuth } from "@/providers/AuthProvider";
 import { AuthAvatar } from "../../_components/AuthAvatar";
 import { LogoutButton } from "../../_components/LogoutButton";
-import { BellIcon } from "lucide-react";
-import { ROLES_DATA } from "@/data/const";
 
 export default function AvatarDropdown() {
   const { user } = useAuth();

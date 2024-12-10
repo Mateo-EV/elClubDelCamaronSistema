@@ -1,15 +1,9 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatPrice } from "@/lib/utils";
 import { db } from "@/server/db";
 import { Suspense } from "react";
 import { CalendarDateRangePicker } from "./_components/DateTimePicker";
-import { MonthlyRevenue, Overview } from "./_components/Overview";
+import { type MonthlyRevenue, Overview } from "./_components/Overview";
 import { RecentOrders } from "./_components/RecentOrders";
 
 export default function DashboardPage() {
