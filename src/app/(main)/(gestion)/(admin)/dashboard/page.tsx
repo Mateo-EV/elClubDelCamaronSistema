@@ -61,12 +61,12 @@ async function Dashboard() {
     }),
     db.$queryRaw<MonthlyRevenue[]>`
     SELECT 
-      DATE_FORMAT(createdAt, '%b') AS month, -- Obtiene el nombre del mes (Jan, Feb, etc.)
-      SUM(total) AS revenue
-    FROM \`Order\`
-    WHERE status = 'Completado'
-    GROUP BY DATE_FORMAT(createdAt, '%Y-%m') -- Agrupa por año y mes
-    ORDER BY DATE_FORMAT(createdAt, '%Y-%m');
+    DATE_FORMAT(createdAt, '%b') AS month, -- Nombre del mes
+    SUM(total) AS revenue
+  FROM \`Order\`
+  WHERE status = 'Completado'
+  GROUP BY DATE_FORMAT(createdAt, '%b'), DATE_FORMAT(createdAt, '%Y-%m') -- Agrupa por año y mes
+  ORDER BY DATE_FORMAT(createdAt, '%Y-%m');
   `,
     db.order.findMany({
       take: 5,
