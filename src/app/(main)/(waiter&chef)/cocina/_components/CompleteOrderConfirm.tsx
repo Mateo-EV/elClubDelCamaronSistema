@@ -15,29 +15,28 @@ export const CompleteOrderConfirm = ({
   const { setOpen } = useModalReponsive();
 
   const apiUtils = api.useUtils();
-  const { mutate: completeOrder, isPending } =
-    api.chef.completeOrder.useMutation({
-      onSuccess: async (order) => {
-        await apiUtils.chef.getMyOrdersFromToday.cancel();
+  const { mutate: completeOrder, isPending } = api.chef.sentOrder.useMutation({
+    onSuccess: async (order) => {
+      await apiUtils.chef.getMyOrdersFromToday.cancel();
 
-        apiUtils.chef.getMyOrdersFromToday.setData(undefined, (prev) => {
-          if (!prev) return;
+      apiUtils.chef.getMyOrdersFromToday.setData(undefined, (prev) => {
+        if (!prev) return;
 
-          return prev.map((p) => {
-            if (p.id === orderId) return order;
-            return p;
-          });
+        return prev.map((p) => {
+          if (p.id === orderId) return order;
+          return p;
         });
+      });
 
-        void apiUtils.chef.getMyOrdersFromToday.invalidate(undefined, {
-          predicate: (q) => !q.state.data,
-        });
+      void apiUtils.chef.getMyOrdersFromToday.invalidate(undefined, {
+        predicate: (q) => !q.state.data,
+      });
 
-        setOpen(false);
+      setOpen(false);
 
-        toast.success("Pedido completeado");
-      },
-    });
+      toast.success("Pedido enviado");
+    },
+  });
 
   return (
     <div className="mt-4 flex justify-between">
@@ -49,7 +48,7 @@ export const CompleteOrderConfirm = ({
         variant="success"
         onClick={() => completeOrder(orderId)}
       >
-        Confirmar
+        Enviar
       </SubmitButton>
     </div>
   );

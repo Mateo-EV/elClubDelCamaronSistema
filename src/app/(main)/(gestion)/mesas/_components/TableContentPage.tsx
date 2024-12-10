@@ -12,7 +12,9 @@ import { TableGrid } from "./TableGrid";
 import { useIsAdmin } from "@/hooks/useAdmin";
 
 export const TableContentPage = () => {
-  const [tables] = api.table.getAll.useSuspenseQuery();
+  const [tables] = api.table.getAll.useSuspenseQuery(undefined, {
+    refetchInterval: 2000,
+  });
   const [statusFilter, setStatusFilter] = useState<TableStatus | "all">("all");
   const [sortCapacityOrder, setSortCapacityOrder] = useState<
     "desc" | "asc" | null

@@ -13,6 +13,7 @@ import { formatId } from "@/lib/utils";
 import { type RouterOutputs } from "@/trpc/react";
 import { OrderStatus } from "@prisma/client";
 import {
+  CheckIcon,
   CircleXIcon,
   ClockIcon,
   Edit2Icon,
@@ -22,6 +23,7 @@ import {
 import Link from "next/link";
 import { useRef } from "react";
 import { CancelOrderConfirm } from "./CancelOrderConfirm";
+import { CompleteOrderConfirm } from "./CompleteOrderConfirm";
 
 type OrderCardProps = {
   order: RouterOutputs["waiter"]["getMyOrdersFromToday"][number];
@@ -54,6 +56,7 @@ const getElapsedTime = (date: Date) => {
 
 export const OrderCard = ({ order }: OrderCardProps) => {
   const cancelTrigger = useRef<HTMLDivElement>(null);
+  const completeTrigger = useRef<HTMLDivElement>(null);
 
   return (
     <>
@@ -118,6 +121,15 @@ export const OrderCard = ({ order }: OrderCardProps) => {
               </Link>
             </DropdownMenuItem>
           )}
+          {order.status === OrderStatus.Send ? (
+            <DropdownMenuItem
+              className="text-green-500 focus:text-green-500"
+              onClick={() => completeTrigger.current?.click()}
+            >
+              <CheckIcon />
+              <span>Completar</span>
+            </DropdownMenuItem>
+          ) : null}
 
           <DropdownMenuItem
             className="text-destructive focus:text-destructive"
@@ -134,6 +146,13 @@ export const OrderCard = ({ order }: OrderCardProps) => {
         trigger={<div ref={cancelTrigger} />}
       >
         <CancelOrderConfirm orderId={order.id} />
+      </ModalResponsive>
+      <ModalResponsive
+        title="Pedido Completado"
+        description="Los clientes ya han pagado por el pedido"
+        trigger={<div ref={completeTrigger} />}
+      >
+        <CompleteOrderConfirm orderId={order.id} />
       </ModalResponsive>
     </>
   );

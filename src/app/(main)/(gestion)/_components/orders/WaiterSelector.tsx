@@ -35,7 +35,9 @@ export const WaiterSelector = ({
   setWaiterId,
   waiterId,
 }: WaiterSelectorProps) => {
-  const { data: waiters, isLoading } = api.user.getWaiters.useQuery();
+  const { data: waiters, isLoading } = api.user.getWaiters.useQuery(undefined, {
+    refetchInterval: 2000,
+  });
 
   if (isLoading || !waiters) return <Skeleton className="h-10" />;
 

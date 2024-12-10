@@ -83,7 +83,7 @@ export const OrderEdit = ({ order }: OrderEditProps) => {
               Volver
             </Link>
             <SubmitButton type="submit" isSubmitting={isPending}>
-              Procesar
+              Editar
             </SubmitButton>
           </div>
         </Form>

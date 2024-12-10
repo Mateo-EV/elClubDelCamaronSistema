@@ -8,7 +8,9 @@ import { useMemo } from "react";
 import { OrderCard } from "./OrderCard";
 
 export const OrdersList = () => {
-  const [orders] = api.chef.getMyOrdersFromToday.useSuspenseQuery();
+  const [orders] = api.chef.getMyOrdersFromToday.useSuspenseQuery(undefined, {
+    refetchInterval: 2000,
+  });
 
   if (orders.length === 0) {
     return (

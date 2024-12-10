@@ -38,7 +38,12 @@ async function Dashboard() {
     monthlyRevenue,
     recentOrders,
   ] = await db.$transaction([
-    db.order.aggregate({ _sum: { total: true } }),
+    db.order.aggregate({
+      _sum: { total: true },
+      where: {
+        status: "Completed",
+      },
+    }),
     db.order.count({
       where: {
         status: "Completed",
@@ -59,6 +64,7 @@ async function Dashboard() {
       DATE_FORMAT(createdAt, '%b') AS month, -- Obtiene el nombre del mes (Jan, Feb, etc.)
       SUM(total) AS revenue
     FROM \`Order\`
+    WHERE status = 'Completado'
     GROUP BY DATE_FORMAT(createdAt, '%Y-%m') -- Agrupa por año y mes
     ORDER BY DATE_FORMAT(createdAt, '%Y-%m');
   `,

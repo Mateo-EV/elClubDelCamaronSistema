@@ -34,6 +34,7 @@ export const ORDER_STATUS = {
   [OrderStatus.Pending]: "Pendiente",
   [OrderStatus.InProcess]: "En Proceso",
   [OrderStatus.Canceled]: "Cancelado",
+  [OrderStatus.Send]: "Entregado",
   [OrderStatus.Completed]: "Completado",
 };
 

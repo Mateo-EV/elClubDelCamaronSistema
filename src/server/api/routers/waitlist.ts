@@ -4,7 +4,12 @@ import {
   waitlistSchema,
   waitlistSeatSchema,
 } from "@/validators/waitlist";
-import { OrderStatus, UserRole, WaitlistStatus } from "@prisma/client";
+import {
+  OrderStatus,
+  TableStatus,
+  UserRole,
+  WaitlistStatus,
+} from "@prisma/client";
 import { z } from "zod";
 import { adminOrHostProcedure, createTRPCRouter } from "../trpc";
 import { TRPCError } from "@trpc/server";
@@ -74,6 +79,10 @@ export const waitlistRouter = createTRPCRouter({
           data: { status: WaitlistStatus.Seated, seatedTime: new Date() },
           where: { id: waitlistId },
           include: { client: true },
+        }),
+        ctx.db.table.update({
+          data: { status: TableStatus.Occupied },
+          where: { id: orderData.tableId },
         }),
       ]);
 

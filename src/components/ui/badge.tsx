@@ -24,6 +24,8 @@ const badgeVariants = cva(
           "text-red-500 bg-red-500/40 hover:bg-red-500/20 border-transparent",
         [OrderStatus.Completed]:
           "text-green-500 bg-green-500/40 hover:bg-green-500/20 border-transparent",
+        [OrderStatus.Send]:
+          "text-cyan-500 bg-cyan-500/40 hover:bg-cyan-500/20 border-transparent",
         [ReservationStatus.Confirmed]:
           "text-green-500 bg-green-500/40 hover:bg-green-500/20 border-transparent",
         [WaitlistStatus.Seated]:

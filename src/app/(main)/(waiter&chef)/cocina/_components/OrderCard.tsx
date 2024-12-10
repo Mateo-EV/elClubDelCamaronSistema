@@ -102,7 +102,7 @@ export const OrderCard = ({ order }: OrderCardProps) => {
             onClick={() => completeTrigger.current.click()}
           >
             <CheckIcon />
-            <span>Completar</span>
+            <span>Enviar</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

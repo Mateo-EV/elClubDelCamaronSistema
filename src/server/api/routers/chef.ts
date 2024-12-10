@@ -29,7 +29,7 @@ export const chefRouter = createTRPCRouter({
         },
       }),
     ),
-  completeOrder: chefProcedure
+  sentOrder: chefProcedure
     .input(z.number())
     .mutation(async ({ ctx, input: orderId }) => {
       const order = await ctx.db.order.findUnique({
@@ -44,17 +44,11 @@ export const chefRouter = createTRPCRouter({
         throw new TRPCError({ code: "BAD_REQUEST" });
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const [_, orderUpdated] = await ctx.db.$transaction([
-        ctx.db.user.update({
-          where: { id: order.waiterId },
-          data: { activeOrdersCount: { decrement: 1 } },
-        }),
-        ctx.db.order.update({
-          where: { id: orderId },
-          data: { status: OrderStatus.Completed },
-          include: { waiter: true },
-        }),
-      ]);
+      const orderUpdated = await ctx.db.order.update({
+        where: { id: orderId },
+        data: { status: OrderStatus.Send },
+        include: { waiter: true },
+      });
 
       return orderUpdated;
     }),

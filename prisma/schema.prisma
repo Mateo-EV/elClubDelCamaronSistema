@@ -110,6 +110,7 @@ enum OrderStatus {
     InProcess @map("En Proceso")
     Canceled  @map("Cancelado")
     Completed @map("Completado")
+    Send      @map("Entregado")
 }
 
 model Order {

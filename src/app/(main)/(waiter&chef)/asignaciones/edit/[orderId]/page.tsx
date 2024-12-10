@@ -14,7 +14,12 @@ export default async function WaiterEditOrderPage({
 
   const order = await api.waiter.getOrderDetail(orderId);
 
-  if (!order || order.status !== OrderStatus.InProcess) return notFound();
+  if (
+    !order ||
+    (order.status !== OrderStatus.InProcess &&
+      order.status !== OrderStatus.Send)
+  )
+    return notFound();
 
   return <OrderEdit order={order} />;
 }

@@ -4,7 +4,12 @@ import {
   reservationEditServerSchema,
   reservationSchema,
 } from "@/validators/reservation";
-import { OrderStatus, ReservationStatus, UserRole } from "@prisma/client";
+import {
+  OrderStatus,
+  ReservationStatus,
+  TableStatus,
+  UserRole,
+} from "@prisma/client";
 import { z } from "zod";
 import {
   adminOrHostProcedure,
@@ -84,6 +89,10 @@ export const reservationRouter = createTRPCRouter({
           data: { status: ReservationStatus.Confirmed },
           where: { id: reservationId },
           include: { client: true },
+        }),
+        ctx.db.table.update({
+          data: { status: TableStatus.Occupied },
+          where: { id: reservation.tableId },
         }),
       ]);
 

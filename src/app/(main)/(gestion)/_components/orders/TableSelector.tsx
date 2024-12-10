@@ -42,7 +42,9 @@ type TableSelectorProps = {
 };
 
 export const TableSelector = ({ setTableId, tableId }: TableSelectorProps) => {
-  const { data: tables, isLoading } = api.table.getAll.useQuery();
+  const { data: tables, isLoading } = api.table.getAll.useQuery(undefined, {
+    refetchInterval: 2000,
+  });
 
   if (isLoading || !tables) return <Skeleton className="h-10" />;
 

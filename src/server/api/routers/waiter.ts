@@ -2,7 +2,7 @@ import { getTodayFilters } from "@/lib/utils";
 import { createTRPCRouter, waiterProcedure } from "../trpc";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { OrderStatus } from "@prisma/client";
+import { OrderStatus, TableStatus } from "@prisma/client";
 import { orderWaiterProcessSchema } from "@/validators/order";
 
 export const waiterRouter = createTRPCRouter({
@@ -44,13 +44,25 @@ export const waiterRouter = createTRPCRouter({
       )
         throw new TRPCError({ code: "BAD_REQUEST" });
 
-      return await ctx.db.order.update({
-        where: {
-          id: orderId,
-        },
-        data: { status: OrderStatus.Canceled },
-        include: { client: true },
-      });
+      const [orderUpdated] = await ctx.db.$transaction([
+        ctx.db.order.update({
+          where: {
+            id: orderId,
+          },
+          data: { status: OrderStatus.Canceled },
+          include: { client: true },
+        }),
+        ctx.db.user.update({
+          where: { id: order.waiterId },
+          data: { activeOrdersCount: { decrement: 1 } },
+        }),
+        ctx.db.table.update({
+          data: { status: TableStatus.Available },
+          where: { id: order.tableId },
+        }),
+      ]);
+
+      return orderUpdated;
     }),
   proccessOrder: waiterProcedure
     .input(orderWaiterProcessSchema)
@@ -121,7 +133,11 @@ export const waiterRouter = createTRPCRouter({
         select: { status: true },
       });
 
-      if (!order || order.status !== OrderStatus.InProcess)
+      if (
+        !order ||
+        (order.status !== OrderStatus.InProcess &&
+          order.status !== OrderStatus.Send)
+      )
         throw new TRPCError({ code: "BAD_REQUEST" });
 
       const productIds = details.map(({ productId }) => productId);
@@ -152,6 +168,7 @@ export const waiterRouter = createTRPCRouter({
         data: {
           total,
           notes,
+          status: OrderStatus.InProcess,
           details: {
             deleteMany: {},
             createMany: {
@@ -164,5 +181,38 @@ export const waiterRouter = createTRPCRouter({
         },
         include: { client: true },
       });
+    }),
+  completeOrder: waiterProcedure
+    .input(z.number())
+    .mutation(async ({ ctx, input: orderId }) => {
+      const order = await ctx.db.order.findUnique({
+        where: {
+          id: orderId,
+          createdAt: getTodayFilters(),
+          waiterId: ctx.session.user.id,
+        },
+        select: { status: true, waiterId: true },
+      });
+
+      if (!order || order.status !== OrderStatus.Send)
+        throw new TRPCError({ code: "BAD_REQUEST" });
+
+      const [orderUpdated] = await ctx.db.$transaction([
+        ctx.db.order.update({
+          where: { id: orderId },
+          data: { status: OrderStatus.Completed },
+          include: { client: true },
+        }),
+        ctx.db.user.update({
+          where: { id: order.waiterId },
+          data: { activeOrdersCount: { decrement: 1 } },
+        }),
+        ctx.db.table.update({
+          data: { status: TableStatus.Available },
+          where: { id: orderId },
+        }),
+      ]);
+
+      return orderUpdated;
     }),
 });
