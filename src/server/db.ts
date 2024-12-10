@@ -15,3 +15,12 @@ const globalForPrisma = globalThis as unknown as {
 export const db = globalForPrisma.prisma ?? createPrismaClient();
 
 if (env.NODE_ENV !== "production") globalForPrisma.prisma = db;
+
+async function initializeDatabase() {
+  await db.$executeRawUnsafe(
+    `SET SESSION sql_mode = CONCAT(@@SESSION.sql_mode, ',ONLY_FULL_GROUP_BY')`,
+  );
+}
+initializeDatabase().catch((error) => {
+  console.error("Error configuring sql_mode:", error);
+});

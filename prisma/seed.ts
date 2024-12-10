@@ -334,11 +334,7 @@ async function main() {
     data: { total },
   });
 
-  const possibleStatuses = [
-    TableStatus.Available,
-    TableStatus.Occupied,
-    TableStatus.Reserved,
-  ];
+  const possibleStatuses = [TableStatus.Available, TableStatus.Reserved];
 
   // Creamos 30 mesas
   for (let i = 1; i <= 30; i++) {
