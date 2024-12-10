@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { LOGIN_REDIRECT_ROLE } from "@/data/const";
 import { getSession } from "@/server/auth/session";
 import { redirect } from "next/navigation";
 
@@ -13,7 +14,7 @@ export default async function Home() {
   const session = await getSession();
 
   if (session) {
-    redirect("/dashboard");
+    redirect(LOGIN_REDIRECT_ROLE[session.user.role]);
   }
 
   return (

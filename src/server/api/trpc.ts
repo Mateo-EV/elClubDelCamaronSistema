@@ -11,7 +11,7 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { db } from "@/server/db";
-import { getSession, isAdmin, isHost } from "../auth/session";
+import { getSession, isAdmin, isChef, isHost, isWaiter } from "../auth/session";
 
 /**
  * 1. CONTEXT
@@ -94,6 +94,22 @@ export const adminProcedure = protectedProcedure.use(async ({ next }) => {
 
 export const adminOrHostProcedure = protectedProcedure.use(async ({ next }) => {
   if ((await isAdmin()) || (await isHost())) {
+    return next();
+  }
+
+  throw new TRPCError({ code: "UNAUTHORIZED" });
+});
+
+export const waiterProcedure = protectedProcedure.use(async ({ next }) => {
+  if (await isWaiter()) {
+    return next();
+  }
+
+  throw new TRPCError({ code: "UNAUTHORIZED" });
+});
+
+export const chefProcedure = protectedProcedure.use(async ({ next }) => {
+  if (await isChef()) {
     return next();
   }
 

@@ -54,3 +54,10 @@ export const WAITLIST_STATUS = {
   [WaitlistStatus.Cancelled]: "Cancelado",
   [WaitlistStatus.Seated]: "Asignado",
 };
+
+export const LOGIN_REDIRECT_ROLE = {
+  [UserRole.ADMIN]: "/dashboard",
+  [UserRole.CHEF]: "/cocina",
+  [UserRole.HOST]: "/lista-de-espera",
+  [UserRole.WAITER]: "/asignaciones",
+};

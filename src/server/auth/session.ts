@@ -55,3 +55,15 @@ export const isHost = cache(async () => {
 
   return session.user.role === UserRole.HOST;
 });
+
+export const isWaiter = cache(async () => {
+  const session = (await getSession())!;
+
+  return session.user.role === UserRole.WAITER;
+});
+
+export const isChef = cache(async () => {
+  const session = (await getSession())!;
+
+  return session.user.role === UserRole.CHEF;
+});

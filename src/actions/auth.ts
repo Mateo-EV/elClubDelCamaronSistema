@@ -3,20 +3,13 @@
 import { verify } from "@/lib/argon";
 import { unformatId } from "@/lib/utils";
 import { lucia } from "@/server/auth/init";
+import { getSession } from "@/server/auth/session";
 import { db } from "@/server/db";
 import { loginSchema, type loginSchemaType } from "@/validators/auth";
 import { cookies } from "next/headers";
-import { ActionResponse } from "./general";
-import { getSession } from "@/server/auth/session";
 import { redirect } from "next/navigation";
-import { UserRole } from "@prisma/client";
-
-const LOGIN_REDIRECT_ROLE = {
-  [UserRole.ADMIN]: "/dashboard",
-  [UserRole.CHEF]: "/dashboard",
-  [UserRole.HOST]: "/lista-de-espera",
-  [UserRole.WAITER]: "/dashboard",
-};
+import { ActionResponse } from "./general";
+import { LOGIN_REDIRECT_ROLE } from "@/data/const";
 
 export async function login(data: loginSchemaType) {
   let existingUser;

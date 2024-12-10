@@ -51,3 +51,26 @@ export const orderAdminEditSchema = z.object({
     .min(1, "Debe haber al menos un producto para editar el pedido"),
   orderId: z.number(),
 });
+
+export const orderWaiterProcessSchema = z.object({
+  details: z
+    .array(
+      z.object({
+        productId: z.coerce.number({ message: "El producto es obligatorio" }),
+        quantity: z.coerce
+          .number({ message: "La cantidad es obligatoria" })
+          .int({ message: "La cantidad debe ser un entero" })
+          .min(1, { message: "La cantidad debe ser mayor que 0" }),
+      }),
+    )
+    .min(1, "Debe haber al menos un producto para procesar el pedido"),
+  notes: z
+    .string()
+    .max(255, "Las notas tienen un límite de 255 caracteres")
+    .nullish(),
+  orderId: z.number(),
+});
+
+export type orderWaiterProcessSchemaType = z.infer<
+  typeof orderWaiterProcessSchema
+>;

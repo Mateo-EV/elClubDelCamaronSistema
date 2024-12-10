@@ -1,8 +1,5 @@
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { getSession } from "@/server/auth/session";
 import { TRPCReactProvider } from "@/trpc/react";
-import { AppSidebar } from "./_components/AppSidebar";
-import { Header } from "./_components/Header";
 import { redirect } from "next/navigation";
 import AuthProvider from "@/providers/AuthProvider";
 
@@ -19,15 +16,7 @@ export default async function MainLayout({
 
   return (
     <AuthProvider session={session}>
-      <SidebarProvider>
-        <TRPCReactProvider>
-          <AppSidebar />
-          <SidebarInset>
-            <Header />
-            <div className="flex-1 p-4 pt-0">{children}</div>
-          </SidebarInset>
-        </TRPCReactProvider>
-      </SidebarProvider>
+      <TRPCReactProvider>{children}</TRPCReactProvider>
     </AuthProvider>
   );
 }

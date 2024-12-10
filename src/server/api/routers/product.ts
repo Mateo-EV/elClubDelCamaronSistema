@@ -1,10 +1,10 @@
 import { productEditServerSchema, productSchema } from "@/validators/product";
-import { adminProcedure, createTRPCRouter } from "../trpc";
+import { adminProcedure, createTRPCRouter, protectedProcedure } from "../trpc";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 
 export const productRouter = createTRPCRouter({
-  getAll: adminProcedure.query(async ({ ctx }) =>
+  getAll: protectedProcedure.query(async ({ ctx }) =>
     ctx.db.product.findMany({
       include: {
         orderDetails: true,

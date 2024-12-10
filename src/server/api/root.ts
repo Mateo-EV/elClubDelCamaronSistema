@@ -8,6 +8,8 @@ import { orderRouter } from "./routers/order";
 import { tableRouter } from "./routers/table";
 import { reservationRouter } from "./routers/reservation";
 import { waitlistRouter } from "./routers/waitlist";
+import { waiterRouter } from "./routers/waiter";
+import { chefRouter } from "./routers/chef";
 
 /**
  * This is the primary router for your server.
@@ -24,6 +26,8 @@ export const appRouter = createTRPCRouter({
   table: tableRouter,
   reservation: reservationRouter,
   waitlist: waitlistRouter,
+  waiter: waiterRouter,
+  chef: chefRouter,
 });
 
 // export type definition of API
